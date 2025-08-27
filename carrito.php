@@ -18,59 +18,62 @@ try {
 
 // INICIALIZAR CARRITO SI NO EXISTE
 if (!isset($_SESSION['carrito'])) {
-    $_SESSION['carrito'] = array();
+    $_SESSION['carrito'] = [];
 }
 
 // PROCESAR ACCIONES DEL CARRITO
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'add':
-                // AGREGAR PRODUCTO AL CARRITO
-                $producto = array(
-                    'id' => $_POST['id'],
-                    'nombre' => $_POST['nombre'],
-                    'precio' => $_POST['precio'],
-                    'kit' => $_POST['kit'],
-                    'cantidad' => $_POST['cantidad'],
-                    'imagen' => $_POST['imagen']
-                );
-                
-                // VERIFICAR SI EL PRODUCTO YA EXISTE EN EL CARRITO
-                $encontrado = false;
-                foreach ($_SESSION['carrito'] as $key => $item) {
-                    if ($item['id'] == $producto['id'] && $item['kit'] == $producto['kit']) {
-                        $_SESSION['carrito'][$key]['cantidad'] += $producto['cantidad'];
-                        $encontrado = true;
-                        break;
+if (isset($_GET['action'])) {
+    $action = $_GET['action'];
+    
+    switch ($action) {
+    case 'add':
+        // AGREGAR PRODUCTO AL CARRITO
+        $id = intval($_GET['id']);
+        $nombre = $_GET['nombre'];
+        $precio = floatval($_GET['precio']);
+        $cantidad = isset($_GET['cantidad']) ? intval($_GET['cantidad']) : 1;
+        $imagen = $_GET['imagen'];
+
+        // VERIFICAR SI EL PRODUCTO YA EXISTE EN EL CARRITO
+        if (isset($_SESSION['carrito'][$id])) {
+            $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
+        } else {
+            $_SESSION['carrito'][$id] = [
+                'nombre' => $nombre,
+                'precio' => $precio,
+                'imagen' => $imagen,
+                'cantidad' => $cantidad
+            ];
+        }
+
+    header("Location: carrito.php");
+    exit;
+
+            
+        case 'update':
+            if (isset($_POST['cantidades'])) {
+                foreach ($_POST['cantidades'] as $id => $cantidad) {
+                    if ($cantidad > 0) {
+                        $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
+                    } else {
+                        unset($_SESSION['carrito'][$id]);
                     }
                 }
+            }
+            header("Location: carrito.php");
+            exit;
                 
-                if (!$encontrado) {
-                    $_SESSION['carrito'][] = $producto;
-                }
-                break;
-                
-            case 'update':
-                // ACTUALIZAR CANTIDAD
-                $index = $_POST['index'];
-                $cantidad = $_POST['cantidad'];
-                if ($cantidad > 0) {
-                    $_SESSION['carrito'][$index]['cantidad'] = $cantidad;
-                } else {
-                    unset($_SESSION['carrito'][$index]);
-                    $_SESSION['carrito'] = array_values($_SESSION['carrito']);
-                }
-                break;
-                
-            case 'remove':
+        case 'remove':
                 // ELIMINAR PRODUCTO
-                $index = $_POST['index'];
-                unset($_SESSION['carrito'][$index]);
-                $_SESSION['carrito'] = array_values($_SESSION['carrito']);
-                break;
-                
-            case 'checkout':
+            $id = intval($_GET['id']);
+            unset($_SESSION['carrito'][$id]);
+            header("Location: carrito.php");
+            exit;
+
+        case 'checkout':
+            $_SESSION['carrito'] = [];
+            header("Location: gracias.php");
+            exit;
                 // PROCESAR COMPRA - AQUÍ DEBES ADAPTAR SEGÚN TU LÓGICA DE NEGOCIO
                 /*
                 // EJEMPLO DE INSERCIÓN EN BASE DE DATOS:
@@ -82,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 
                 // 2. INSERTAR DETALLES DEL PEDIDO
                 foreach ($_SESSION['carrito'] as $item) {
-                    $stmt = $pdo->prepare("INSERT INTO detalle_pedidos (pedido_id, producto_id, nombre_producto, kit_tipo, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?)");
                     $subtotal = $item['precio'] * $item['cantidad'];
                     $stmt->execute([$pedido_id, $item['id'], $item['nombre'], $item['kit'], $item['cantidad'], $item['precio'], $subtotal]);
                 }
@@ -97,9 +99,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header("Location: confirmacion.php?pedido=$pedido_id");
                 exit;
                 */
-                break;
-        }
     }
+    
+}
+
+// Al agregar al carrito desde detalle_casa.php, guardar nombre de casa y kit, precio y cantidad
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+    $id = intval($_POST['id']);
+    $kit_idx = intval($_POST['kit']);
+    $cantidad = isset($_POST['cantidad']) ? intval($_POST['cantidad']) : 1;
+
+    // Obtener info de la casa y kit
+    include_once 'detalle_casa.php'; // reutiliza arrays $casas y $kits
+    $nombre = $casas[$id]['titulo'] ?? 'Casa';
+    $imagen = $casas[$id]['imagen'] ?? '';
+    $kit_nombre = $kits[$id][$kit_idx]['nombre'] ?? 'Kit';
+    $kit_precio = isset($kits[$id][$kit_idx]['precio']) ? floatval(str_replace('.', '', $kits[$id][$kit_idx]['precio'])) : 0;
+
+    // Si ya existe, suma cantidad
+    $key = $id . '-' . $kit_idx;
+    if (isset($_SESSION['carrito'][$key])) {
+        $_SESSION['carrito'][$key]['cantidad'] += $cantidad;
+    } else {
+        $_SESSION['carrito'][$key] = [
+            'nombre' => $nombre,
+            'kit' => $kit_nombre,
+            'precio' => $kit_precio,
+            'imagen' => $imagen,
+            'cantidad' => $cantidad
+        ];
+    }
+    header('Location: carrito.php');
+    exit;
 }
 
 // FUNCIÓN PARA CALCULAR TOTAL
@@ -595,12 +626,12 @@ function formatearPrecio($precio) {
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="sobrenosotros.php">Nuestra Empresa</a></li>
+                    <li><a href="sobre-nosotros.php">Nuestra Empresa</a></li>
                     <li><a href="index.php#catalog">Casas prefabricadas</a></li>
-                    <li><a href="#llave">Llave en mano</a></li>
-                    <li><a href="#proyectos">Proyectos</a></li>
+                    <li><a href="index.php#llave">Llave en mano</a></li>
+                    <li><a href="index.php#proyectos">Proyectos</a></li>
                     <li><a href="login.php">Login</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
+                    <li><a href="#index.phpcontacto">Contacto</a></li>
                 </ul>
             </nav>
             <div class="cart-icon">
@@ -620,7 +651,7 @@ function formatearPrecio($precio) {
                     <div class="empty-cart">
                         <h3>Tu carrito está vacío</h3>
                         <p>¡Agrega algunas casas prefabricadas para comenzar!</p>
-                        <a href="index.html#catalog" class="continue-shopping">Continuar Comprando</a>
+                        <a href="index.php#catalog" class="continue-shopping">Continuar Comprando</a>
                     </div>
                 </div>
             <?php else: ?>
@@ -634,7 +665,7 @@ function formatearPrecio($precio) {
                                 </div>
                                 <div class="item-info">
                                     <h3><?php echo htmlspecialchars($item['nombre']); ?></h3>
-                                    <p>Kit: <?php echo htmlspecialchars($item['kit']); ?></p>
+                                    <p>Kit: <strong><?php echo htmlspecialchars($item['kit']); ?></strong></p>
                                 </div>
                                 <div class="item-price">
                                     <?php echo formatearPrecio($item['precio']); ?>
@@ -653,10 +684,10 @@ function formatearPrecio($precio) {
                                     </form>
                                 </div>
                                 <div>
-                                    <form method="post" style="display: inline;">
+                                    <form method="get">
                                         <input type="hidden" name="action" value="remove">
-                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                        <button type="submit" class="remove-btn" onclick="return confirm('¿Eliminar este producto?')">Eliminar</button>
+                                        <input type="hidden" name="id" value="<?php echo $index; ?>">
+                                        <button type="submit" class="remove-btn">Eliminar</button>
                                     </form>
                                 </div>
                             </div>
@@ -789,6 +820,7 @@ function formatearPrecio($precio) {
     <a href="https://wa.me/56956397365" class="whatsapp-float" target="_blank">💬</a>
 
     <script>
+        /*
         // Actualizar badge del carrito
         function updateCartBadge() {
             const badge = document.querySelector('.cart-badge');
@@ -796,6 +828,7 @@ function formatearPrecio($precio) {
                 badge.textContent = <?php echo count($_SESSION['carrito']); ?>;
             }
         }
+        */
 
         // Confirmar eliminación
         document.querySelectorAll('.remove-btn').forEach(btn => {

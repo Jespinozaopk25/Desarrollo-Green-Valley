@@ -225,6 +225,44 @@ switch ($action) {
         $stmt->close();
         break;
 
+
+    case 'get_project_process':
+        $id_cotizacion = $_POST['id_cotizacion'] ?? null;
+        if (!$id_cotizacion) {
+            echo json_encode(['success' => false, 'error' => 'ID de cotización requerido']);
+            break;
+        }
+        // Buscar el proyecto relacionado
+        $stmt = $conn->prepare("SELECT id_proyecto, estado, fecha_inicio, fecha_entrega_estimada FROM proyecto WHERE id_pedido = ?");
+        $stmt->bind_param("i", $id_cotizacion);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            // Simular etapas del proceso (puedes adaptar a tu lógica real)
+            $proceso = [
+                [
+                    'nombre' => 'Inicio',
+                    'estado' => 'Completado',
+                    'fecha' => $row['fecha_inicio']
+                ],
+                [
+                    'nombre' => 'Fabricación',
+                    'estado' => ($row['estado'] === 'en_proceso' || $row['estado'] === 'entregado') ? 'En curso o completado' : 'Pendiente',
+                    'fecha' => $row['fecha_inicio']
+                ],
+                [
+                    'nombre' => 'Entrega Estimada',
+                    'estado' => ($row['estado'] === 'entregado') ? 'Completado' : 'Pendiente',
+                    'fecha' => $row['fecha_entrega_estimada']
+                ]
+            ];
+            echo json_encode(['success' => true, 'proceso' => $proceso]);
+        } else {
+            echo json_encode(['success' => false, 'proceso' => []]);
+        }
+        $stmt->close();
+        break;
+
     default:
         echo json_encode(['success' => false, 'error' => 'Acción no válida']);
         break;

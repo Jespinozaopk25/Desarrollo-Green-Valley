@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-08-2025 a las 04:33:38
+-- Tiempo de generación: 27-08-2025 a las 07:25:26
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -20,6 +20,59 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `green_valley_bd`
 --
+
+DELIMITER $$
+--
+-- Procedimientos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_proyectos_aceptados` ()   BEGIN
+    INSERT INTO proyecto (
+        id_usuario,
+        id_modelo,
+        estado,
+        fecha_inicio,
+        fecha_entrega_estimada,
+        id_pedido
+    )
+    SELECT
+        id_usuario,
+        id_modelo,
+        estado,
+        fecha,
+        DATE_ADD(fecha, INTERVAL 30 DAY),
+        id_cotizacion
+    FROM cotizacion
+    WHERE estado = 'aceptada'
+    AND id_cotizacion NOT IN (
+        SELECT id_pedido FROM proyecto
+    );
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_proyecto_15` ()   BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM proyecto WHERE id_pedido = 15
+    ) THEN
+        INSERT INTO proyecto (
+            id_usuario,
+            id_modelo,
+            estado,
+            fecha_inicio,
+            fecha_entrega_estimada,
+            id_pedido
+        )
+        SELECT
+            id_usuario,
+            id_modelo,
+            estado,
+            fecha,
+            DATE_ADD(fecha, INTERVAL 30 DAY),
+            id_cotizacion
+        FROM cotizacion
+        WHERE id_cotizacion = 15;
+    END IF;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -45,9 +98,10 @@ CREATE TABLE `cotizacion` (
 --
 
 INSERT INTO `cotizacion` (`id_cotizacion`, `id_usuario`, `id_modelo`, `fecha`, `total`, `estado`, `id_vendedor`, `modelo_casa`, `region`, `observaciones`) VALUES
-(13, 4, NULL, '2025-08-24 21:31:59', 400.00, 'pendiente', 2, 'Casa Familiar 65m²', 'ynosee', ''),
+(13, 4, NULL, '2025-08-24 21:31:59', 7000.00, 'pendiente', 2, 'Casa Familiar 65m²', 'ynosee', ''),
 (14, 6, NULL, '2025-08-24 21:32:28', 999999.00, 'pendiente', 2, 'Casa de lujo 120m²', 'noseeee', ''),
-(15, 5, NULL, '2025-08-24 21:45:05', 130.00, 'pendiente', 2, 'Casa Ejecutiva 120m²', 'puede ser', '');
+(15, 5, 7, '2025-08-24 21:45:05', 130.00, 'aceptada', 2, 'Casa Ejecutiva 120m²', 'puede ser', ''),
+(16, 16, NULL, '2025-08-25 00:30:34', 6000.00, 'pendiente', 2, 'Casa de lujo 120m²', 'pudu', '');
 
 -- --------------------------------------------------------
 
@@ -182,6 +236,13 @@ CREATE TABLE `pedido` (
   `id_usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `pedido`
+--
+
+INSERT INTO `pedido` (`id_pedido`, `id_cotizacion`, `fecha_pedido`, `estado`, `observaciones`, `id_pago`, `id_usuario`) VALUES
+(15, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -197,6 +258,13 @@ CREATE TABLE `proyecto` (
   `fecha_entrega_estimada` date DEFAULT NULL,
   `id_pedido` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto`
+--
+
+INSERT INTO `proyecto` (`id_proyecto`, `id_usuario`, `id_modelo`, `estado`, `fecha_inicio`, `fecha_entrega_estimada`, `id_pedido`) VALUES
+(4, 5, 7, '', '2025-08-24', '2025-09-23', 15);
 
 -- --------------------------------------------------------
 
@@ -241,9 +309,12 @@ CREATE TABLE `stock_casa` (
 --
 
 INSERT INTO `stock_casa` (`id_stock`, `id_modelo`, `ubicacion`, `estado`, `cantidad_disponible`, `fecha_actualizacion`) VALUES
-(1, 15, 'Bodega Central - Santiago', 'disponible', 5, '2025-08-24 19:08:20'),
+(1, 15, 'Bodega Central - Santiago', 'disponible', 6, '2025-08-24 22:56:44'),
 (2, 16, 'Sucursal', 'reservado', 2, '2025-08-24 19:08:20'),
-(3, 7, 'Sucursal', 'vendido', 0, '2025-08-24 19:08:20');
+(3, 7, 'Sucursal', 'vendido', 0, '2025-08-24 19:08:20'),
+(4, 1, 'Bodega Central - Santiago', 'disponible', 5, '2025-08-25 00:28:24'),
+(5, 4, 'Bodega Central - Santiago', 'disponible', 20, '2025-08-24 23:12:46'),
+(6, 7, 'Bodega Central - Santiago', 'disponible', 7, '2025-08-24 23:15:45');
 
 -- --------------------------------------------------------
 
@@ -282,7 +353,8 @@ INSERT INTO `usuario` (`id_usuario`, `nombre`, `apellido`, `correo`, `contrasena
 (12, 'Diego', 'Alvarez', 'diego.alvarez@email.com', 'user789', '+56999887766', 'usuario', 'activo', '2025-08-24 19:06:03'),
 (13, 'Valentina', 'Ríos', 'valentina.rios@email.com', 'valen123', '+56933445566', 'vendedor', 'activo', '2025-08-24 19:06:03'),
 (14, 'Andrés', 'Pérez', 'andres.perez@email.com', 'andres456', '+56912344321', 'usuario', 'activo', '2025-08-24 19:06:03'),
-(15, 'felipe', 'nuñez', 'felxnun@gmail.com', 'natrepatan', '+569', 'usuario', 'activo', '2025-08-24 21:17:28');
+(15, 'felipe', 'nuñez', 'felxnun@gmail.com', 'natrepatan', '+569', 'usuario', 'activo', '2025-08-24 21:17:28'),
+(16, 'rodrigo', 'quiroga', 'r.quiroga@gmail.com', '$2y$10$5Wt8zKY8I8oTDBzp5L5UTuld/iIlMfMGXISKnPPcfy/r.sqPOAbGW', '+569987', 'usuario', 'activo', '2025-08-24 22:46:12');
 
 --
 -- Índices para tablas volcadas
@@ -383,7 +455,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `id_cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `cronograma`
@@ -413,13 +485,13 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `proyecto`
 --
 ALTER TABLE `proyecto`
-  MODIFY `id_proyecto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proyecto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `servicio_adicional`
@@ -431,13 +503,13 @@ ALTER TABLE `servicio_adicional`
 -- AUTO_INCREMENT de la tabla `stock_casa`
 --
 ALTER TABLE `stock_casa`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Restricciones para tablas volcadas

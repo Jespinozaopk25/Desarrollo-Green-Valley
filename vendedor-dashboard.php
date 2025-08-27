@@ -139,10 +139,14 @@ $conn = new mysqli("localhost", "root", "", "green_valley_bd");
 if (!$conn->connect_error) {
     $result = $conn->query("SELECT nombre, precio_base, imagen_url, descripcion FROM modelo_casa");
     while ($row = $result->fetch_assoc()) {
+        // Forzar ruta IMG/ para todas las imágenes y eliminar cualquier prefijo 'images' o similar
+        $img = $row['imagen_url']
+            ? 'IMG/' . preg_replace('#^(images/|IMG/|img/)+#i', '', ltrim($row['imagen_url'], '/\\'))
+            : '/placeholder.svg?height=200&width=300';
         $house_models_data[] = [
             'name' => $row['nombre'],
             'price' => $row['precio_base'],
-            'image' => $row['imagen_url'] ?: '/placeholder.svg?height=200&width=300',
+            'image' => $img,
             'description' => $row['descripcion'],
             'stock' => rand(3, 15) // simulado
         ];
@@ -952,6 +956,106 @@ if (!$conn->connect_error) {
                   <?php endwhile; ?>
               </table>
               <?php $conn->close(); ?>
+
+              <!-- Pop-up Modificar (debe estar aquí para cotizaciones) -->
+              <div id="editPopup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;">
+                  <div style="background:#fff;padding:30px;border-radius:10px;max-width:400px;margin:auto;position:relative;">
+                      <h3>Modificar Cotización</h3>
+                      <form id="editForm">
+                          <input type="hidden" name="id_cotizacion" id="edit_id_cotizacion">
+                          <label>Total:</label>
+                          <input type="number" name="total" id="edit_total" required style="width:100%;margin-bottom:10px;">
+                          <label>Estado:</label>
+                          <select name="estado" id="edit_estado" style="width:100%;margin-bottom:10px;">
+                              <option value="pendiente">Pendiente</option>
+                              <option value="aceptada">Aceptada</option>
+                          </select>
+                          <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                          <button type="button" class="btn btn-outline btn-sm" onclick="closeEditPopup()">Cancelar</button>
+                      </form>
+                  </div>
+              </div>
+
+              <!-- Pop-up Eliminar (debe estar aquí para cotizaciones) -->
+              <div id="deletePopup" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;">
+                  <div style="background:#fff;padding:30px;border-radius:10px;max-width:400px;margin:auto;position:relative;">
+                      <h3>¿Eliminar Cotización?</h3>
+                      <form id="deleteForm">
+                          <input type="hidden" name="id_cotizacion" id="delete_id_cotizacion">
+                          <button type="submit" class="btn btn-primary btn-sm">Eliminar</button>
+                          <button type="button" class="btn btn-outline btn-sm" onclick="closeDeletePopup()">Cancelar</button>
+                      </form>
+                  </div>
+              </div>
+          </section>
+      <?php elseif ($active_section === 'projects'): ?>
+          <section class="section active">
+              <h2>Proyectos en Proceso</h2>
+              <p class="section-subtitle">Aquí puedes ver el avance de las casas prefabricadas correspondientes a cotizaciones aceptadas.</p>
+              <?php
+              $conn = new mysqli("localhost", "root", "", "green_valley_bd");
+              $result = $conn->query("
+                  SELECT c.id_cotizacion, c.modelo_casa, c.region, c.total, c.fecha, p.estado AS estado_proyecto, p.progreso, u.nombre AS cliente
+                  FROM cotizacion c
+                  JOIN usuario u ON c.id_usuario = u.id_usuario
+                  LEFT JOIN proyecto p ON c.id_cotizacion = p.id_cotizacion
+                  WHERE c.estado = 'aceptada'
+                  ORDER BY c.fecha DESC
+              ");
+              if ($result && $result instanceof mysqli_result):
+              ?>
+              <table style="width:100%;margin-bottom:10px;">
+                  <tr>
+                      <th>ID Cotización</th>
+                      <th>Cliente</th>
+                      <th>Modelo</th>
+                      <th>Región</th>
+                      <th>Total</th>
+                      <th>Fecha</th>
+                      <th>Estado Proyecto</th>
+                      <th>Progreso</th>
+                      <th>Acciones</th>
+                  </tr>
+                  <?php while ($row = $result->fetch_assoc()): ?>
+                  <tr>
+                      <td><?php echo $row['id_cotizacion']; ?></td>
+                      <td><?php echo htmlspecialchars($row['cliente']); ?></td>
+                      <td><?php echo htmlspecialchars($row['modelo_casa']); ?></td>
+                      <td><?php echo htmlspecialchars($row['region']); ?></td>
+                      <td>$<?php echo number_format($row['total']); ?></td>
+                      <td><?php echo $row['fecha']; ?></td>
+                      <td><?php echo $row['estado_proyecto'] ? ucfirst($row['estado_proyecto']) : 'En espera'; ?></td>
+                      <td>
+                          <?php if ($row['progreso'] !== null): ?>
+                              <div style="width:120px;background:#eee;border-radius:8px;overflow:hidden;">
+                                  <div style="width:<?php echo (int)$row['progreso']; ?>%;background:#27ae60;color:#fff;text-align:center;font-size:12px;padding:2px 0;">
+                                      <?php echo (int)$row['progreso']; ?>%
+                                  </div>
+                              </div>
+                          <?php else: ?>
+                              <span style="color:#888;">-</span>
+                          <?php endif; ?>
+                      </td>
+                      <td>
+                          <button class="btn btn-primary btn-sm" onclick="viewProjectProcess(<?php echo $row['id_cotizacion']; ?>)">Ver Proceso</button>
+                      </td>
+                  </tr>
+                  <?php endwhile; ?>
+              </table>
+              <?php else: ?>
+                  <p class="no-data">No se pudieron obtener los proyectos. Verifica la conexión o la consulta SQL.</p>
+              <?php endif; $conn->close(); ?>
+
+              <!-- Modal para ver proceso de proyecto -->
+              <div id="projectProcessModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);justify-content:center;align-items:center;z-index:999;">
+                  <div style="background:#fff;padding:30px;border-radius:10px;max-width:500px;margin:auto;position:relative;">
+                      <h3>Proceso de Creación de la Casa</h3>
+                      <div id="projectProcessContent">
+                          <!-- Aquí se cargará el detalle por AJAX -->
+                      </div>
+                      <button class="btn btn-outline btn-sm" onclick="closeProjectProcessModal()">Cerrar</button>
+                  </div>
+              </div>
           </section>
       <?php else: ?>
           <!-- Other Sections -->
@@ -1119,7 +1223,39 @@ if (!$conn->connect_error) {
         }
     });
 
-    // Aquí puedes agregar AJAX para editar/eliminar cotización
+
+    // Proceso de proyecto (modal)
+    function viewProjectProcess(idCotizacion) {
+        // Aquí puedes hacer AJAX para traer el detalle del proceso
+        var content = document.getElementById('projectProcessContent');
+        content.innerHTML = '<p>Cargando proceso...</p>';
+        document.getElementById('projectProcessModal').style.display = 'flex';
+
+        // Simulación de AJAX (puedes reemplazar por fetch a un endpoint real)
+        fetch('cotizacion_ajax.php', {
+            method: 'POST',
+            body: new URLSearchParams({ action: 'get_project_process', id_cotizacion: idCotizacion })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success && data.proceso) {
+                var html = '<ul style="padding-left:18px;">';
+                data.proceso.forEach(function(etapa) {
+                    html += '<li><strong>' + etapa.nombre + ':</strong> ' + etapa.estado + ' (' + etapa.fecha + ')</li>';
+                });
+                html += '</ul>';
+                content.innerHTML = html;
+            } else {
+                content.innerHTML = '<p>No hay información de proceso disponible.</p>';
+            }
+        })
+        .catch(function() {
+            content.innerHTML = '<p>Error al cargar el proceso.</p>';
+        });
+    }
+    function closeProjectProcessModal() {
+        document.getElementById('projectProcessModal').style.display = 'none';
+    }
 
     // Mostrar popup de nueva cotización
     function openNewQuotePopup() {

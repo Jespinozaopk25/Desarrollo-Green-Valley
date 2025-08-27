@@ -714,7 +714,7 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
     <header>
         <div class="container header-container">
             <a href="index.php" class="logo">
-                <img src="logoGreenValley.jpg" alt="Green Valley" class="logo-image">
+                <img src="IMG/logoGreenValley.jpg" alt="Green Valley" class="logo-image">
             </a>
             <nav>
                 <ul>
@@ -765,9 +765,9 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
     <section class="hero">
         <!-- Fondo con imágenes -->
         <div class="hero-background">
-            <img src="imagendeinicio.jpg" alt="Casa Prefabricada 1" class="active">
-            <img src="imagendeinicio_2.jpg" alt="Casa Prefabricada 2">
-            <img src="imagendeinicio_3.jpg" alt="Casa Prefabricada 3">
+            <img src="IMG/imagendeinicio.jpg" alt="Casa Prefabricada 1" class="active">
+            <img src="IMG/imagendeinicio_2.jpg" alt="Casa Prefabricada 2">
+            <img src="IMG/imagendeinicio_3.jpg" alt="Casa Prefabricada 3">
         </div>
 
         <!-- Overlay para mejorar legibilidad -->
@@ -844,7 +844,7 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
         </div>
     </section>
 
-    <!-- Catalog Section -->
+ <!-- Catalog Section -->
     <section id="catalog" class="catalog">
         <div class="container">
             <h2 class="section-title">Nuestras Casas Prefabricadas</h2>
@@ -854,64 +854,380 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                 <!-- Casa 1 -->
                 <div class="house-card">
                     <div class="house-image">
-                        <img src="casa1.jpg" alt="Casa Prefabricada 21 m2">
+                        <img src="IMG/casa1.jpg" alt="Casa Prefabricada 21 m2">
                         <span class="house-badge">Más Popular</span>
                     </div>
                     <div class="house-info">
                         <h3 class="house-title">Casa Prefabricada 21 m2</h3>
                         <div class="house-price">Desde $1.940.000</div>
                         <div class="house-details">
-                            <span>🛏️ 1 Habitacion</span>
+                            <span>🛏️ 1 Dormitorio</span>
                             <span>🚿 1 Baño</span>
                             <span>📐 21 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="detalle_casa.php" class="btn btn-secondary">Ver producto</a>
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=1" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
                 </div>
                 <!-- Casa 2 -->
                 <div class="house-card">
                     <div class="house-image">
-                        <img src="/placeholder.svg?height=250&width=400" alt="Casa Modelo Beta">
+                        <img src="IMG/casa2.jpg" alt="Casa Prefabricada 36 m2">
                         <span class="house-badge">Recomendado</span>
                     </div>
                     <div class="house-info">
-                        <h3 class="house-title">Casa Modelo Beta</h3>
-                        <div class="house-price">Desde $65.000.000</div>
+                        <h3 class="house-title">Casa Prefabricada 36 m2</h3>
+                        <div class="house-price">Desde $3.390.000</div>
                         <div class="house-details">
-                            <span>🛏️ 3 Habitaciones</span>
-                            <span>🚿 2 Baños</span>
-                            <span>📐 90 m²</span>
+                            <span>🛏️ 2 Dormitorios</span>
+                            <span>🚿 1 Baño</span>
+                            <span>📐 36 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#" class="btn btn-secondary">Ver producto</a>
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=2" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
                 </div>
                 <!-- Casa 3 -->
                 <div class="house-card">
                     <div class="house-image">
-                        <img src="/placeholder.svg?height=250&width=400" alt="Casa Modelo Gamma">
+                        <img src="IMG/casa3.jpg" alt="Casa Prefabricada 48 m2">
                         <span class="house-badge">Premium</span>
                     </div>
                     <div class="house-info">
-                        <h3 class="house-title">Casa Modelo Gamma</h3>
-                        <div class="house-price">Desde $85.000.000</div>
+                        <h3 class="house-title">Casa Prefabricada 48 m2</h3>
+                        <div class="house-price">Desde $4.338.000</div>
                         <div class="house-details">
-                            <span>🛏️ 4 Habitaciones</span>
+                            <span>🛏️ 2 Dormitorios</span>
+                            <span>🚿 1 Baño</span>
+                            <span>📐 42 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=3" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Casas extras ocultas -->
+                    <!-- Casa 4 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa4.jpg" alt="Casa Prefabricada 54 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 54 m2</h3>
+                        <div class="house-price">Desde $4.698.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 2 Dormitorios</span>
+                            <span>🚿 1 Baño</span>
+                            <span>📐 54 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 5 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa5.jpg" alt="Casa Prefabricada 66 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 66 m2</h3>
+                        <div class="house-price">Desde $5.400.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 2 Dormitorios</span>
+                            <span>🚿 1 Baño</span>
+                            <span>📐 60 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=5" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 6 -->
+
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa6.jpg" alt="Casa Prefabricada 60 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 60 m2</h3>
+                        <div class="house-price">Desde $5.610.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 1 Baño</span>
+                            <span>📐 60 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=6" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 7 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa7.jpg" alt="Casa Prefabricada 72 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 72 m2</h3>
+                        <div class="house-price">Desde $6.120.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 2 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 72 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=7" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 8 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa8.jpg" alt="Casa Prefabricada 80 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 80 m2</h3>
+                        <div class="house-price">Desde $4.338.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3-2 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 80 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=8" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Casa 9 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa9.jpg" alt="Casa Prefabricada 90 m2 Tradicional">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 90 m2 Tradicional</h3>
+                        <div class="house-price">Desde $7.650.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 90 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=9" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Casa 10 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa10.jpg" alt="Casa Prefabricada 90 m2 Mediterránea">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 90 m2 Mediterránea</h3>
+                        <div class="house-price">Desde $7.650.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 90 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=10" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Casa 11 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa11.jpg" alt="Casa Prefabricada 117 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 117 m2</h3>
+                        <div class="house-price">Desde $9.880.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 4 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 100 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=11" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Casa 12 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa12.jpg" alt="Casa Prefabricada 126 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 126 m2</h3>
+                        <div class="house-price">Desde $10.710.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 4 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 126 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=12" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 13 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa13.jpg" alt="Casa Prefabricada 156 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 156 m2</h3>
+                        <div class="house-price">Desde $12.900.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 4 Dormitorios</span>
                             <span>🚿 3 Baños</span>
                             <span>📐 120 m²</span>
                         </div>
                         <div class="house-actions">
-
-                            <a href="#" class="btn btn-secondary">Ver producto</a>
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=13" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
                 </div>
+
+                    <!-- Casa 14 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa14.jpg" alt="Casa Prefabricada 130 m2 (2 pisos)">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 130 m2 (2 pisos)</h3>
+                        <div class="house-price">Desde $15.568.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 130 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=14" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 15 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa15.jpg" alt="Casa Prefabricada 166 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 166 m2</h3>
+                        <div class="house-price">Desde $13.600.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 4 Dormitorios</span>
+                            <span>🚿 2 Baños</span>
+                            <span>📐 120 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=15" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 16 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa16.jpg" alt="Casa Prefabricada 190 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 190 m2</h3>
+                        <div class="house-price">Desde $15.490.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 3 Baños</span>
+                            <span>📐 134 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=16" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Casa 17 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa17.jpg" alt="Casa Prefabricada 190 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 190 m2</h3>
+                        <div class="house-price">Desde $16.490.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 3 Dormitorios</span>
+                            <span>🚿 3 Baños</span>
+                            <span>📐 135 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=17" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+                    <!-- Casa 18 -->
+                <div class="house-card extra-house" style="display:none;">
+                    <div class="house-image">
+                        <img src="IMG/casa18.jpg" alt="Casa Prefabricada 281 m2">
+                    </div>
+                    <div class="house-info">
+                        <h3 class="house-title">Casa Prefabricada 281 m2</h3>
+                        <div class="house-price">Desde $30.297.000</div>
+                        <div class="house-details">
+                            <span>🛏️ 6 Dormitorios</span>
+                            <span>🚿 4,5 Baños</span>
+                            <span>📐 254 m²</span>
+                        </div>
+                        <div class="house-actions">
+                            <a href="#quote" class="btn btn-primary">Cotizar</a>
+                            <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
+    <div style="text-align:center; margin-top:20px;">
+        <button id="verMasBtn" class="btn btn-primary">Ver más casas</button>
+    </div>
+
+    <script>
+        const btn = document.getElementById('verMasBtn');
+        const extras = document.querySelectorAll('.extra-house');
+
+        // Subir el botón desde el borde de la sección
+        btn.style.marginBottom = '40px'; // agrega espacio debajo del botón
+
+        btn.addEventListener('click', () => {
+            extras.forEach(house => house.style.display = 'block');
+            btn.style.display = 'none'; // Oculta el botón después de mostrar
+        });
+    </script>
 
 
     <!-- Sección de Contacto tipo footer -->

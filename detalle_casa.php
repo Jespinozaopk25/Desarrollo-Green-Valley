@@ -1,746 +1,304 @@
 <?php
-session_start(); // Mover al principio del archivo, antes de cualquier HTML
+// detalle_casa.php?id=2
+$casa_id = isset($_GET['id']) ? intval($_GET['id']) : 1;
+
+// Datos de ejemplo para cada casa (puedes reemplazar por consulta a BD si lo deseas)
+$casas = [
+    1 => [
+        'titulo' => 'Casa Prefabricada 21 m²',
+        'imagen' => 'IMG/casa1.jpg',
+        'precio' => 'Desde $1.940.000',
+        'dormitorios' => 1,
+        'banos' => 1,
+        'superficie' => '21 m²',
+        'descripcion' => 'Modelo compacto ideal para parejas o personas solas. Diseño eficiente y funcional.'
+    ],
+    2 => [
+        'titulo' => 'Casa Prefabricada 36 m²',
+        'imagen' => 'IMG/casa2.jpg',
+        'precio' => 'Desde $3.390.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => '36 m²',
+        'descripcion' => 'Modelo familiar pequeño, perfecto para familias jóvenes o como segunda vivienda.'
+    ],
+    3 => [
+        'titulo' => 'Casa Prefabricada 48 m²',
+        'imagen' => 'IMG/casa3.jpg',
+        'precio' => 'Desde $4.338.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => '48 m²',
+        'descripcion' => 'Casa de mayor tamaño, ideal para familias que buscan más espacio y comodidad.'
+    ],
+    4 => [
+        'titulo' => 'Casa Prefabricada 54 m²',
+        'imagen' => 'IMG/casa4.jpg',
+        'precio' => 'Desde $4.698.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => '54 m²',
+        'descripcion' => 'Modelo eficiente y funcional, perfecto para familias pequeñas.'
+    ],
+    5 => [
+        'titulo' => 'Casa Prefabricada 66 m²',
+        'imagen' => 'IMG/casa5.jpg',
+        'precio' => 'Desde $5.400.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => '60 m²',
+        'descripcion' => 'Casa cómoda y moderna, ideal para familias que buscan confort.'
+    ],
+    6 => [
+        'titulo' => 'Casa Prefabricada 60 m²',
+        'imagen' => 'IMG/casa6.jpg',
+        'precio' => 'Desde $5.610.000',
+        'dormitorios' => 3,
+        'banos' => 1,
+        'superficie' => '60 m²',
+        'descripcion' => 'Modelo con tres dormitorios, ideal para familias en crecimiento.'
+    ],
+    7 => [
+        'titulo' => 'Casa Prefabricada 72 m²',
+        'imagen' => 'IMG/casa7.jpg',
+        'precio' => 'Desde $6.120.000',
+        'dormitorios' => 2,
+        'banos' => 2,
+        'superficie' => '72 m²',
+        'descripcion' => 'Casa con dos baños, perfecta para mayor comodidad.'
+    ],
+    8 => [
+        'titulo' => 'Casa Prefabricada 80 m²',
+        'imagen' => 'IMG/casa8.jpg',
+        'precio' => 'Desde $4.338.000',
+        'dormitorios' => '3-2',
+        'banos' => 2,
+        'superficie' => '80 m²',
+        'descripcion' => 'Modelo versátil con opción de 2 o 3 dormitorios.'
+    ],
+    9 => [
+        'titulo' => 'Casa Prefabricada 90 m² Tradicional',
+        'imagen' => 'IMG/casa9.jpg',
+        'precio' => 'Desde $7.650.000',
+        'dormitorios' => 3,
+        'banos' => 2,
+        'superficie' => '90 m²',
+        'descripcion' => 'Estilo tradicional, amplia y luminosa.'
+    ],
+    10 => [
+        'titulo' => 'Casa Prefabricada 90 m² Mediterránea',
+        'imagen' => 'IMG/casa10.jpg',
+        'precio' => 'Desde $7.650.000',
+        'dormitorios' => 3,
+        'banos' => 2,
+        'superficie' => '90 m²',
+        'descripcion' => 'Diseño mediterráneo, elegante y funcional.'
+    ],
+    11 => [
+        'titulo' => 'Casa Prefabricada 117 m²',
+        'imagen' => 'IMG/casa11.jpg',
+        'precio' => 'Desde $9.880.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => '100 m²',
+        'descripcion' => 'Casa grande para familias numerosas.'
+    ],
+    12 => [
+        'titulo' => 'Casa Prefabricada 126 m²',
+        'imagen' => 'IMG/casa12.jpg',
+        'precio' => 'Desde $10.710.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => '126 m²',
+        'descripcion' => 'Espaciosa y moderna, con acabados de calidad.'
+    ],
+    13 => [
+        'titulo' => 'Casa Prefabricada 156 m²',
+        'imagen' => 'IMG/casa13.jpg',
+        'precio' => 'Desde $12.900.000',
+        'dormitorios' => 4,
+        'banos' => 3,
+        'superficie' => '120 m²',
+        'descripcion' => 'Ideal para familias grandes, con tres baños.'
+    ],
+    14 => [
+        'titulo' => 'Casa Prefabricada 130 m² (2 pisos)',
+        'imagen' => 'IMG/casa14.jpg',
+        'precio' => 'Desde $15.568.000',
+        'dormitorios' => 3,
+        'banos' => 2,
+        'superficie' => '130 m²',
+        'descripcion' => 'Casa de dos pisos, moderna y elegante.'
+    ],
+    15 => [
+        'titulo' => 'Casa Prefabricada 166 m²',
+        'imagen' => 'IMG/casa15.jpg',
+        'precio' => 'Desde $13.600.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => '120 m²',
+        'descripcion' => 'Gran espacio y comodidad para toda la familia.'
+    ],
+    16 => [
+        'titulo' => 'Casa Prefabricada 190 m²',
+        'imagen' => 'IMG/casa16.jpg',
+        'precio' => 'Desde $15.490.000',
+        'dormitorios' => 3,
+        'banos' => 3,
+        'superficie' => '134 m²',
+        'descripcion' => 'Casa amplia con tres baños y gran terreno.'
+    ],
+    17 => [
+        'titulo' => 'Casa Prefabricada 190 m²',
+        'imagen' => 'IMG/casa17.jpg',
+        'precio' => 'Desde $16.490.000',
+        'dormitorios' => 3,
+        'banos' => 3,
+        'superficie' => '135 m²',
+        'descripcion' => 'Modelo premium, máxima comodidad y espacio.'
+    ],
+    18 => [
+        'titulo' => 'Casa Prefabricada 281 m²',
+        'imagen' => 'IMG/casa18.jpg',
+        'precio' => 'Desde $30.297.000',
+        'dormitorios' => 6,
+        'banos' => '4,5',
+        'superficie' => '254 m²',
+        'descripcion' => 'La más grande, ideal para proyectos familiares o comerciales.'
+    ]
+];
+
+// Generar kits genéricos para todos los modelos si no existen
+$kits = $kits ?? [];
+for ($i = 1; $i <= 18; $i++) {
+    if (!isset($kits[$i])) {
+        $kits[$i] = [
+            [
+                'nombre' => 'Kit Estructural',
+                'descripcion' => 'Incluye estructura, paneles y techumbre. Ideal para autoconstrucción.',
+                'imagen' => 'IMG/kits_1.jpeg',
+                'precio' => '3.000.000'
+            ],
+            [
+                'nombre' => 'Kit Inicial',
+                'descripcion' => 'Incluye estructura más ventanas, puertas y terminaciones básicas.',
+                'imagen' => 'IMG/kits_1.jpeg',
+                'precio' => '5.000.000'
+            ],
+            [
+                'nombre' => 'Kit Completo',
+                'descripcion' => 'Incluye todo lo anterior más radier, electricidad y flete.',
+                'imagen' => 'IMG/kits_1.jpeg',
+                'precio' => '7.000.000'
+            ]
+        ];
+    }
+}
+$casa = $casas[$casa_id] ?? $casas[1];
+
+$kits_casa = $kits[$casa_id] ?? [];
+$kit_seleccionado = 0;
+if (isset($_POST['kit'])) {
+    $kit_seleccionado = intval($_POST['kit']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalle - Casa Prefabricada 21 m²</title>
+    <meta charset="UTF-8">
+    <title><?php echo $casa['titulo']; ?> - Green Valley</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Top Bar Styles */
-        .top-bar {
-            background: #2c3e50;
-            color: white;
-            padding: 8px 0;
-            font-size: 13px;
-        }
-
-        .top-bar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .contact-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .whatsapp-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: 11px;
-            transition: background 0.3s;
-        }
-
-        .whatsapp-btn:hover {
-            background: #128c7e;
-        }
-
-        /* Header Styles */
-        header {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-        }
-
-        .logo-image {
-            height: 45px;
-            width: auto;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #7cb342;
-        }
-
-        .logout-btn {
-            background: #e74c3c;
-            color: white !important;
-            padding: 8px 15px;
-            border-radius: 20px;
-            transition: background 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #c0392b;
-        }
-
-        .user-greeting {
-            color: #7cb342;
-            font-weight: 600;
-        }
-
-        .cart-icon {
-            position: relative;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-        }
-
-        /* Detalle Container */
-        .detalle-container {
-            padding: 40px 0;
-            background: #f8f9fa;
-            min-height: 70vh;
-        }
-
-        .detalle-flex {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .detalle-img {
-            position: relative;
-        }
-
-        #mainImage {
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        #mainImage:hover {
-            transform: scale(1.02);
-        }
-
-        .nav-btn {
-            position: absolute;
-            top: 45%;
-            background-color: rgba(0,0,0,0.3);
-            color: white;
-            border: none;
-            font-size: 20px;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-btn:hover {
-            background-color: rgba(0,0,0,0.5);
-            transform: scale(1.1);
-        }
-
-        #prevBtn {
-            left: 10px;
-        }
-
-        #nextBtn {
-            right: 10px;
-        }
-
-        .thumbnail-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .thumbnail {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .thumbnail:hover {
-            border-color: #7cb342;
-            transform: scale(1.05);
-        }
-
-        .detalle-info {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            height: fit-content;
-        }
-
-        .detalle-info h1 {
-            font-size: 2.2rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .precio {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            color: #666;
-        }
-
-        .precio strong {
-            color: #7cb342;
-            font-size: 1.8rem;
-        }
-
-        .detalle-info ul {
-            list-style: none;
-            margin-bottom: 25px;
-        }
-
-        .detalle-info ul li {
-            padding: 8px 0;
-            color: #555;
-            font-size: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .detalle-info ul li:last-child {
-            border-bottom: none;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #7cb342;
-        }
-
-        .precio-display {
-            margin: 15px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #7cb342;
-        }
-
-        .precio-display label {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 14px;
-        }
-
-        #precioDisplay {
-            color: #7cb342;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .quantity-cart-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .quantity-input {
-            width: 80px;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .btn-cart {
-            background: #7cb342;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-        }
-
-        .btn-cart:hover {
-            background: #689f38;
-            transform: translateY(-1px);
-        }
-
-        .detalle-descripcion {
-            max-width: 1200px;
-            margin: 40px auto 0;
-            padding: 0 20px;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .detalle-descripcion h2 {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .detalle-descripcion p {
-            color: #666;
-            line-height: 1.6;
-            font-size: 15px;
-        }
-
-        /* Footer - mismo estilo que index */
-        footer {
-            background: #2c3e50;
-            color: white;
-            padding: 40px 0 15px;
-            margin-top: 40px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 25px;
-        }
-
-        .footer-column h3 {
-            color: #7cb342;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-column ul li a {
-            color: #bdc3c7;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .footer-column ul li a:hover {
-            color: #7cb342;
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 15px;
-            border-top: 1px solid #34495e;
-            color: #bdc3c7;
-            font-size: 13px;
-        }
-
-        /* WhatsApp Float Button */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25d366;
-            color: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            text-decoration: none;
-            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.3);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.05);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .detalle-flex {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .detalle-info h1 {
-                font-size: 1.8rem;
-            }
-
-            .top-bar-content {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .contact-info {
-                justify-content: center;
-                font-size: 12px;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .quantity-cart-container {
-                flex-direction: column;
-            }
-
-            .quantity-input {
-                width: 100%;
-            }
-
-            .thumbnail-container {
-                justify-content: center;
-            }
-
-            .nav-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-        }
+        .detalle-container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 40px; }
+        .detalle-img { width: 100%; max-width: 400px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .detalle-info { margin-left: 40px; }
+        .detalle-flex { display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; }
+        .detalle-titulo { font-size: 2.2rem; color: #2c3e50; margin-bottom: 10px; }
+        .detalle-precio { font-size: 1.5rem; color: #7cb342; margin-bottom: 20px; }
+        .detalle-lista { list-style: none; padding: 0; margin-bottom: 20px; }
+        .detalle-lista li { margin-bottom: 10px; font-size: 1.1rem; }
+        .detalle-desc { color: #555; margin-bottom: 30px; }
+        .btn { background: #7cb342; color: #fff; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; transition: background 0.3s; border: none; }
+        .btn:hover { background: #689f38; }
+        .kits-section { margin-top: 50px; }
+        .kits-title { font-size: 1.5rem; color: #2c3e50; margin-bottom: 20px; }
+        .kits-grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content:center; }
+        .kit-card { background: #f8f9fa; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px; flex: 1 1 220px; min-width: 220px; max-width: 300px; text-align: center; position:relative; transition: box-shadow 0.3s; cursor:pointer; border: 2px solid transparent; }
+        .kit-card.selected { border: 2px solid #7cb342; box-shadow: 0 4px 16px rgba(124,179,66,0.15); }
+        .kit-img { width: 100%; max-width: 180px; border-radius: 8px; margin-bottom: 15px; }
+        .kit-nombre { font-weight: bold; color: #7cb342; margin-bottom: 10px; }
+        .kit-desc { color: #555; font-size: 1rem; }
+        .kit-radio { position:absolute; top:15px; right:15px; transform:scale(1.3); }
+        .kit-btn { margin-top: 25px; background: #7cb342; color: #fff; padding: 10px 28px; border-radius: 25px; border:none; font-weight:bold; font-size:1rem; cursor:pointer; transition: background 0.3s; }
+        .kit-btn:hover { background: #689f38; }
+        .kit-selected-info { margin-top: 30px; background: #eafbe7; border-left: 5px solid #7cb342; padding: 18px 25px; border-radius: 8px; color: #2c3e50; font-size: 1.1rem; }
     </style>
+    <script>
+    function selectKit(idx) {
+        document.getElementById('kitFormKit').value = idx;
+        document.getElementById('kitForm').submit();
+    }
+    </script>
 </head>
 <body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-bar-content">
-                <div class="contact-info">
-                    <div class="contact-item">📍 Av. Padre Jorge Alessandri KM 22, San Bernardo, RM.</div>
-                    <div class="contact-item">📧 contacto@casasgreenvalley.cl</div>
-                    <div class="contact-item">📞 Tel.: +56 2 2583 2001</div>
-                </div>
-                <div class="whatsapp-buttons">
-                    <a href="https://wa.me/56956397365" class="whatsapp-btn" target="_blank">💬 +569 5309 7365</a>
-                    <a href="https://wa.me/56987037917" class="whatsapp-btn" target="_blank">💬 +569 8703 7917</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <a href="index.php" class="logo">
-                <img src="logoGreenValley.jpg" alt="Green Valley" class="logo-image">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="sobre-nosotros.html">Nuestra Empresa</a></li>
-                    <li><a href="#catalog">Casas prefabricadas</a></li>
-                    <li><a href="#llave">Llave en mano</a></li>
-                    <li><a href="#proyectos">Proyectos</a></li>
-                    <?php if (isset($_SESSION['usuario'])): ?>
-                        <li><a href="dashboard.php">Dashboard</a></li>
-                        <li><a href="logout.php" class="logout-btn">Cerrar Sesión</a></li>
-                        <li class="user-greeting">Hola, <?php echo htmlspecialchars($_SESSION['nombre']); ?>!</li>
-                    <?php else: ?>
-                        <li><a href="login.php">Login</a></li>
-                    <?php endif; ?>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </nav>
-            <div class="cart-icon">🛒<span class="cart-badge">0</span></div>
-        </div>
-    </header>
-
-    <!-- Contenido Detalle -->
-    <section class="detalle-container">
+    <div class="detalle-container">
         <div class="detalle-flex">
-            <div class="detalle-img">
-                <button id="prevBtn" class="nav-btn">←</button>
-                <img id="mainImage" src="casa1.jpg" alt="Casa Prefabricada 21 m²">
-                <button id="nextBtn" class="nav-btn">→</button>
-                <div class="thumbnail-container">
-                    <img src="casa1.jpg" alt="Vista 1" class="thumbnail">
-                    <img src="casa1_1.jpg" alt="Vista 2" class="thumbnail">
-                    <img src="casa1_2.jpg" alt="Vista 3" class="thumbnail">
-                    <img src="casa1_3.jpg" alt="Vista 4" class="thumbnail">
-                </div>
-            </div>
-            
+            <img src="<?php echo $casa['imagen']; ?>" alt="<?php echo $casa['titulo']; ?>" class="detalle-img">
             <div class="detalle-info">
-                <h1>Casa Prefabricada 21 m²</h1>
-                <div class="precio">Desde <strong>$1.940.000</strong></div>
-                
-                <ul>
-                    <li>🛏️ 1 Habitación</li>
-                    <li>🚿 1 Baño</li>
-                    <li>📐 21 m² Totales</li>
-                    <li>🏠 Panel SIP, aislación térmica</li>
-                    <li>🛠️ Personalizable en distribución</li>
+                <h1 class="detalle-titulo"><?php echo $casa['titulo']; ?></h1>
+                <div class="detalle-precio"><?php echo $casa['precio']; ?></div>
+                <ul class="detalle-lista">
+                    <li>🛏️ Dormitorios: <?php echo $casa['dormitorios']; ?></li>
+                    <li>🚿 Baños: <?php echo $casa['banos']; ?></li>
+                    <li>📐 Superficie: <?php echo $casa['superficie']; ?></li>
                 </ul>
-                
-                <form action="carrito.php" method="POST">
-                    <div class="form-group">
-                        <label for="kit">Selecciona el Kit:</label>
-                        <select name="kit" id="kit" class="form-control">
-                            <option value="estructural">Kit Estructural</option>
-                            <option value="inicial">Kit Inicial</option>
-                            <option value="completo">Kit Completo</option>
-                        </select>
+                <div class="detalle-desc"><?php echo $casa['descripcion']; ?></div>
+                <a href="index.php#quote" class="btn">Solicitar Cotización</a>
+            </div>
+        </div>
+        <?php if (!empty($kits_casa)): ?>
+            <div class="kits-section">
+                <div class="kits-title">Opciones de Kits para este modelo</div>
+                <?php if (isset($kits_casa[$kit_seleccionado])): ?>
+                    <div style="display:flex;justify-content:center;align-items:flex-start;gap:40px;margin-bottom:35px;flex-wrap:wrap;">
+                        <img src="<?php echo $kits_casa[$kit_seleccionado]['imagen']; ?>" alt="Vista grande <?php echo $kits_casa[$kit_seleccionado]['nombre']; ?>" style="max-width:420px;width:100%;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.12);">
+                        <div style="flex:1;min-width:220px;max-width:400px;">
+                            <div class="kit-nombre" style="font-size:1.4rem;margin-bottom:10px;"><strong><?php echo $kits_casa[$kit_seleccionado]['nombre']; ?></strong></div>
+                            <div class="kit-desc" style="font-size:1.1rem;margin-bottom:18px;"> <?php echo $kits_casa[$kit_seleccionado]['descripcion']; ?> </div>
+                            <div class="kit-precio" style="color:#2c3e50;font-weight:bold;font-size:1.2rem;">$
+                                <?php echo number_format((int)str_replace('.', '', $kits_casa[$kit_seleccionado]['precio']), 0, ',', '.'); ?>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="precio-display">
-                        <label>Precio del Kit:</label><br>
-                        <strong id="precioDisplay">$1.940.000</strong>
-                    </div>
-                    
-                    <div class="quantity-cart-container">
-                        <input type="number" name="cantidad" value="1" min="1" class="quantity-input" />
-                        <button type="submit" class="btn-cart">AÑADIR AL CARRITO</button>
+                <?php endif; ?>
+                <form id="kitForm" method="post" style="margin-bottom:0;">
+                    <input type="hidden" name="kit" id="kitFormKit" value="<?php echo $kit_seleccionado; ?>">
+                    <div class="kits-grid">
+                        <?php foreach ($kits_casa as $i => $kit): ?>
+                            <div class="kit-card<?php if ($kit_seleccionado === $i) echo ' selected'; ?>" onclick="selectKit(<?php echo $i; ?>)">
+                                <input type="radio" class="kit-radio" name="kit_radio" <?php if ($kit_seleccionado === $i) echo 'checked'; ?> readonly>
+                                <img src="<?php echo $kit['imagen']; ?>" alt="<?php echo $kit['nombre']; ?>" class="kit-img">
+                                <div class="kit-nombre"><?php echo $kit['nombre']; ?></div>
+                                <div class="kit-desc"><?php echo $kit['descripcion']; ?></div>
+                                <div class="kit-precio" style="margin-top:10px; color:#2c3e50; font-weight:bold; font-size:1.1rem;">$
+                                    <?php echo number_format((int)str_replace('.', '', $kit['precio']), 0, ',', '.'); ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </form>
+                <form id="addToCartForm" method="post" action="carrito.php" style="margin-bottom:30px;">
+                    <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="id" value="<?php echo $casa_id; ?>">
+                    <input type="hidden" name="kit" value="<?php echo $kit_seleccionado; ?>">
+                    <input type="hidden" name="cantidad" value="1">
+                    <button type="submit" class="btn btn-primary" style="width:100%;max-width:320px;margin:0 auto 20px auto;display:block;font-size:1.2rem;">Cotizar este kit y agregar al carrito</button>
+                </form>
             </div>
+        <?php endif; ?>
+        <div style="text-align:center; margin-top:40px;">
+            <a href="index.php#catalog" class="btn">Ver más modelos</a>
         </div>
-        
-        <div class="detalle-descripcion">
-            <h2>Descripción del Producto</h2>
-            <p>
-                Esta casa prefabricada de 21 metros cuadrados es una excelente solución para quienes buscan una vivienda
-                compacta, eficiente y con gran aislación térmica. Está construida con paneles SIP, cuenta con estructura
-                metálica y se entrega con instalación eléctrica completa. Ideal como ampliación, oficina, casa de campo
-                o espacio independiente. Se puede personalizar según tus necesidades.
-            </p>
-        </div>
-    </section>
-
-    <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/56956397365" class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">💬</a>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Valley Estructuras</h3>
-                    <p style="color: #bdc3c7; margin-bottom: 20px; font-size: 14px;">
-                        Especialistas en casas prefabricadas de alta calidad. Transformamos tus sueños en realidad con diseños únicos y construcción eficiente.
-                    </p>
-                    <div style="color: #bdc3c7; font-size: 13px;">
-                        <p>📍 Av. Padre Jorge Alessandri KM 22</p>
-                        <p>San Bernardo, Región Metropolitana</p>
-                        <p>📞 +56 2 2583 2001</p>
-                        <p>📧 contacto@casasgreenvalley.cl</p>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>Nuestros Servicios</h3>
-                    <ul>
-                        <li><a href="#catalog">Casas Prefabricadas</a></li>
-                        <li><a href="#">Tiny Houses</a></li>
-                        <li><a href="#">Casas de Lujo</a></li>
-                        <li><a href="#">Diseño Personalizado</a></li>
-                        <li><a href="#">Llave en Mano</a></li>
-                        <li><a href="#">Asesoría Técnica</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Información</h3>
-                    <ul>
-                        <li><a href="#">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros Proyectos</a></li>
-                        <li><a href="#">Proceso de Construcción</a></li>
-                        <li><a href="#">Garantías</a></li>
-                        <li><a href="#">Financiamiento</a></li>
-                        <li><a href="#">Preguntas Frecuentes</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Síguenos</h3>
-                    <ul>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">YouTube</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                    </ul>
-                    <div style="margin-top: 15px;">
-                        <h4 style="color: #7cb342; margin-bottom: 8px; font-size: 14px;">WhatsApp</h4>
-                        <a href="https://wa.me/56956397365" style="color: #25d366; text-decoration: none; font-size: 13px;">+569 5309 7365</a><br>
-                        <a href="https://wa.me/56987037917" style="color: #25d366; text-decoration: none; font-size: 13px;">+569 8703 7917</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Valley Estructuras. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // ------- CAMBIO DE PRECIO POR KIT -------
-        const preciosKit = {
-            "estructural": 1940000,
-            "inicial": 3380000,
-            "completo": 4600000
-        };
-
-        const selectKit = document.getElementById('kit');
-        const precioDisplay = document.getElementById('precioDisplay');
-
-        function formatearPrecio(num) {
-            return '$' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        }
-
-        selectKit.addEventListener('change', () => {
-            const kitSeleccionado = selectKit.value;
-            const precio = preciosKit[kitSeleccionado];
-            precioDisplay.textContent = formatearPrecio(precio);
-        });
-
-        // ------- CARRUSEL DE IMÁGENES -------
-        const mainImage = document.getElementById("mainImage");
-        const thumbnails = document.querySelectorAll(".thumbnail");
-        const nextBtn = document.getElementById("nextBtn");
-        const prevBtn = document.getElementById("prevBtn");
-
-        let imagenes = Array.from(thumbnails).map(img => img.src);
-        let currentIndex = 0;
-
-        function actualizarImagen(index) {
-            mainImage.src = imagenes[index];
-            // Actualizar thumbnails activos
-            thumbnails.forEach((thumb, i) => {
-                thumb.style.border = i === index ? '2px solid #7cb342' : '2px solid transparent';
-            });
-        }
-
-        // Inicializar primer thumbnail como activo
-        actualizarImagen(0);
-
-        thumbnails.forEach((thumb, index) => {
-            thumb.addEventListener("click", () => {
-                currentIndex = index;
-                actualizarImagen(currentIndex);
-            });
-        });
-
-        nextBtn.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % imagenes.length;
-            actualizarImagen(currentIndex);
-        });
-
-        prevBtn.addEventListener("click", () => {
-            currentIndex = (currentIndex - 1 + imagenes.length) % imagenes.length;
-            actualizarImagen(currentIndex);
-        });
-
-        mainImage.addEventListener("click", () => {
-            currentIndex = (currentIndex + 1) % imagenes.length;
-            actualizarImagen(currentIndex);
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+    </div>
 </body>
 </html>
