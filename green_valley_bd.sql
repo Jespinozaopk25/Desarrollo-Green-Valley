@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2025 a las 07:25:26
+-- Tiempo de generación: 05-09-2025 a las 05:07:03
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -98,10 +98,13 @@ CREATE TABLE `cotizacion` (
 --
 
 INSERT INTO `cotizacion` (`id_cotizacion`, `id_usuario`, `id_modelo`, `fecha`, `total`, `estado`, `id_vendedor`, `modelo_casa`, `region`, `observaciones`) VALUES
-(13, 4, NULL, '2025-08-24 21:31:59', 7000.00, 'pendiente', 2, 'Casa Familiar 65m²', 'ynosee', ''),
-(14, 6, NULL, '2025-08-24 21:32:28', 999999.00, 'pendiente', 2, 'Casa de lujo 120m²', 'noseeee', ''),
-(15, 5, 7, '2025-08-24 21:45:05', 130.00, 'aceptada', 2, 'Casa Ejecutiva 120m²', 'puede ser', ''),
-(16, 16, NULL, '2025-08-25 00:30:34', 6000.00, 'pendiente', 2, 'Casa de lujo 120m²', 'pudu', '');
+(13, 4, NULL, '2025-08-24 21:31:59', 7000.00, 'pendiente', 2, 'Casa Familiar 65m²', 'Araucania', ''),
+(14, 6, NULL, '2025-08-24 21:32:28', 999999.00, 'pendiente', 2, 'Casa de lujo 120m²', 'Metropolitana', ''),
+(15, 5, 7, '2025-08-24 21:45:05', 130.00, 'aceptada', 2, 'Casa Ejecutiva 120m²', 'Metropolitana', ''),
+(16, 16, NULL, '2025-08-25 00:30:34', 6000.00, 'pendiente', 2, 'Casa de lujo 120m²', 'Ñuble', ''),
+(17, 14, NULL, '2025-08-28 00:01:18', 35000000.00, 'aceptada', 8, 'Casa Familiar 65m²', 'Metropolitana', ''),
+(18, 4, NULL, '2025-08-28 01:17:58', 25000000.00, 'aceptada', 8, 'Casa Moderna 45m²', 'Metropolitana', ''),
+(19, 11, NULL, '2025-08-28 01:18:15', 50000.00, 'pendiente', 8, 'Casa Compacta 35m²', 'Metropolitana', '');
 
 -- --------------------------------------------------------
 
@@ -189,7 +192,7 @@ CREATE TABLE `modelo_casa` (
 --
 
 INSERT INTO `modelo_casa` (`id_modelo`, `nombre`, `superficie`, `descripcion`, `precio_base`, `imagen_url`) VALUES
-(1, 'Casa de lujo 120m²', 120, 'Casa prefabricada de lujo de 120m²', 9999999999.99, 'casa1.jpg'),
+(1, 'Casa de lujo 120m²', 120, 'Casa prefabricada de lujo de 120m²', 9999999.99, 'casa1.jpg'),
 (4, 'Casa Moderna 45m²', 45, 'Casa prefabricada moderna de 1 dormitorio, ideal para parejas jóvenes. Incluye living-comedor, cocina americana, baño completo y dormitorio principal.', 25000000.00, '/images/casa_moderna_45.jpg'),
 (5, 'Casa Familiar 65m²', 65, 'Casa prefabricada familiar de 2 dormitorios. Perfecta para familias pequeñas con living, comedor, cocina independiente, 2 dormitorios y baño.', 35000000.00, '/images/casa_familiar_65.jpg'),
 (6, 'Casa Premium 85m²', 85, 'Casa prefabricada premium de 3 dormitorios. Incluye living, comedor, cocina equipada, 3 dormitorios, 2 baños y terraza cubierta.', 48000000.00, '/images/casa_premium_85.jpg'),
@@ -312,9 +315,11 @@ INSERT INTO `stock_casa` (`id_stock`, `id_modelo`, `ubicacion`, `estado`, `canti
 (1, 15, 'Bodega Central - Santiago', 'disponible', 6, '2025-08-24 22:56:44'),
 (2, 16, 'Sucursal', 'reservado', 2, '2025-08-24 19:08:20'),
 (3, 7, 'Sucursal', 'vendido', 0, '2025-08-24 19:08:20'),
-(4, 1, 'Bodega Central - Santiago', 'disponible', 5, '2025-08-25 00:28:24'),
-(5, 4, 'Bodega Central - Santiago', 'disponible', 20, '2025-08-24 23:12:46'),
-(6, 7, 'Bodega Central - Santiago', 'disponible', 7, '2025-08-24 23:15:45');
+(4, 1, 'Bodega Central - Santiago', 'disponible', 8, '2025-08-28 00:27:47'),
+(5, 4, 'Bodega Central - Santiago', 'disponible', 50, '2025-08-28 00:28:37'),
+(6, 7, 'Bodega Central - Santiago', 'disponible', 7, '2025-08-24 23:15:45'),
+(7, 10, 'Bodega Central - Santiago', 'disponible', 9, '2025-08-27 23:15:34'),
+(8, 5, 'Bodega Central - Santiago', 'disponible', 10, '2025-08-28 00:28:54');
 
 -- --------------------------------------------------------
 
@@ -353,8 +358,11 @@ INSERT INTO `usuario` (`id_usuario`, `nombre`, `apellido`, `correo`, `contrasena
 (12, 'Diego', 'Alvarez', 'diego.alvarez@email.com', 'user789', '+56999887766', 'usuario', 'activo', '2025-08-24 19:06:03'),
 (13, 'Valentina', 'Ríos', 'valentina.rios@email.com', 'valen123', '+56933445566', 'vendedor', 'activo', '2025-08-24 19:06:03'),
 (14, 'Andrés', 'Pérez', 'andres.perez@email.com', 'andres456', '+56912344321', 'usuario', 'activo', '2025-08-24 19:06:03'),
-(15, 'felipe', 'nuñez', 'felxnun@gmail.com', 'natrepatan', '+569', 'usuario', 'activo', '2025-08-24 21:17:28'),
-(16, 'rodrigo', 'quiroga', 'r.quiroga@gmail.com', '$2y$10$5Wt8zKY8I8oTDBzp5L5UTuld/iIlMfMGXISKnPPcfy/r.sqPOAbGW', '+569987', 'usuario', 'activo', '2025-08-24 22:46:12');
+(15, 'Felipe', 'nuñez', 'felxnun@gmail.com', 'natrepatan', '+569', 'usuario', 'activo', '2025-08-24 21:17:28'),
+(16, 'ROD', 'quiroga', 'r.quiroga@gmail.com', '$2y$10$5Wt8zKY8I8oTDBzp5L5UTuld/iIlMfMGXISKnPPcfy/r.sqPOAbGW', '+569987', 'usuario', 'activo', '2025-08-24 22:46:12'),
+(17, 'mandi', 'arias', 'mandi@gmail.com', '$2y$10$y91qxkRtTN4kNKrCc61AROYgn9H3ClzQV4ERwKWaOfpvHaR0qVC4u', '985623', 'usuario', 'activo', '2025-08-28 01:07:31'),
+(18, 'Xiomara', 'hormazabal', 'ximena@gmail.com', '$2y$10$v0Ucz.BZGRWg023pY36TJuE/whvIZJwxtaIGeeW55ukAb2lhb.IK6', '964587512', 'usuario', 'activo', '2025-08-28 01:20:15'),
+(19, 'Ximena ', 'Jaramillo', 'jara@gmail.com', '$2y$10$fHPvRds.4ghGdIRYUl5EdOJ61e2XTM/AEsXy8aupO4LlRgsVHS7WK', '87956475', 'usuario', 'activo', '2025-08-28 01:26:22');
 
 --
 -- Índices para tablas volcadas
@@ -455,7 +463,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `id_cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `cronograma`
@@ -503,13 +511,13 @@ ALTER TABLE `servicio_adicional`
 -- AUTO_INCREMENT de la tabla `stock_casa`
 --
 ALTER TABLE `stock_casa`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Restricciones para tablas volcadas

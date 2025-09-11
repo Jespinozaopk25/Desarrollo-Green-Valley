@@ -1,162 +1,366 @@
 <?php
-session_start();
+ob_start(); // Evita errores de cabecera
 
-// CONFIGURACIÓN DE BASE DE DATOS - ADAPTAR SEGÚN TU CONFIGURACIÓN
-/*
-$host = 'localhost';
-$dbname = 'green_valley_db';
-$username = 'tu_usuario';
-$password = 'tu_password';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
-}
-*/
+// Configuración de errores para desarrollo
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// INICIALIZAR CARRITO SI NO EXISTE
+// Incluir archivos necesarios (ajustar rutas según tu estructura)
+include_once 'config/conexionDB.php';
+include_once 'config/datosconexion.php';
+include_once 'includes/functions.php';
+
+// Inicializar carrito si no existe
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
 
-// PROCESAR ACCIONES DEL CARRITO
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-    
-    switch ($action) {
-    case 'add':
-        // AGREGAR PRODUCTO AL CARRITO
-        $id = intval($_GET['id']);
-        $nombre = $_GET['nombre'];
-        $precio = floatval($_GET['precio']);
-        $cantidad = isset($_GET['cantidad']) ? intval($_GET['cantidad']) : 1;
-        $imagen = $_GET['imagen'];
-
-        // VERIFICAR SI EL PRODUCTO YA EXISTE EN EL CARRITO
-        if (isset($_SESSION['carrito'][$id])) {
-            $_SESSION['carrito'][$id]['cantidad'] += $cantidad;
-        } else {
-            $_SESSION['carrito'][$id] = [
-                'nombre' => $nombre,
-                'precio' => $precio,
-                'imagen' => $imagen,
-                'cantidad' => $cantidad
-            ];
-        }
-
-    header("Location: carrito.php");
-    exit;
-
-            
-        case 'update':
-            if (isset($_POST['cantidades'])) {
-                foreach ($_POST['cantidades'] as $id => $cantidad) {
-                    if ($cantidad > 0) {
-                        $_SESSION['carrito'][$id]['cantidad'] = $cantidad;
-                    } else {
-                        unset($_SESSION['carrito'][$id]);
-                    }
-                }
-            }
-            header("Location: carrito.php");
-            exit;
-                
-        case 'remove':
-                // ELIMINAR PRODUCTO
-            $id = intval($_GET['id']);
-            unset($_SESSION['carrito'][$id]);
-            header("Location: carrito.php");
-            exit;
-
-        case 'checkout':
-            $_SESSION['carrito'] = [];
-            header("Location: gracias.php");
-            exit;
-                // PROCESAR COMPRA - AQUÍ DEBES ADAPTAR SEGÚN TU LÓGICA DE NEGOCIO
-                /*
-                // EJEMPLO DE INSERCIÓN EN BASE DE DATOS:
-                
-                // 1. INSERTAR PEDIDO PRINCIPAL
-                $stmt = $pdo->prepare("INSERT INTO pedidos (cliente_nombre, cliente_email, cliente_telefono, total, fecha_pedido, estado) VALUES (?, ?, ?, ?, NOW(), 'pendiente')");
-                $stmt->execute([$_POST['nombre'], $_POST['email'], $_POST['telefono'], calcularTotal()]);
-                $pedido_id = $pdo->lastInsertId();
-                
-                // 2. INSERTAR DETALLES DEL PEDIDO
-                foreach ($_SESSION['carrito'] as $item) {
-                    $subtotal = $item['precio'] * $item['cantidad'];
-                    $stmt->execute([$pedido_id, $item['id'], $item['nombre'], $item['kit'], $item['cantidad'], $item['precio'], $subtotal]);
-                }
-                
-                // 3. LIMPIAR CARRITO
-                $_SESSION['carrito'] = array();
-                
-                // 4. ENVIAR EMAIL DE CONFIRMACIÓN (OPCIONAL)
-                // mail($_POST['email'], "Confirmación de pedido #$pedido_id", $mensaje_email);
-                
-                // 5. REDIRIGIR A PÁGINA DE CONFIRMACIÓN
-                header("Location: confirmacion.php?pedido=$pedido_id");
-                exit;
-                */
-    }
-    
+// Función para validar datos de entrada
+function validarDatos($data) {
+    return htmlspecialchars(strip_tags(trim($data)));
 }
 
-// Al agregar al carrito desde detalle_casa.php, guardar nombre de casa y kit, precio y cantidad
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $id = intval($_POST['id']);
-    $kit_idx = intval($_POST['kit']);
-    $cantidad = isset($_POST['cantidad']) ? intval($_POST['cantidad']) : 1;
-
-    // Obtener info de la casa y kit
-    include_once 'detalle_casa.php'; // reutiliza arrays $casas y $kits
-    $nombre = $casas[$id]['titulo'] ?? 'Casa';
-    $imagen = $casas[$id]['imagen'] ?? '';
-    $kit_nombre = $kits[$id][$kit_idx]['nombre'] ?? 'Kit';
-    $kit_precio = isset($kits[$id][$kit_idx]['precio']) ? floatval(str_replace('.', '', $kits[$id][$kit_idx]['precio'])) : 0;
-
-    // Si ya existe, suma cantidad
-    $key = $id . '-' . $kit_idx;
-    if (isset($_SESSION['carrito'][$key])) {
-        $_SESSION['carrito'][$key]['cantidad'] += $cantidad;
-    } else {
-        $_SESSION['carrito'][$key] = [
-            'nombre' => $nombre,
-            'kit' => $kit_nombre,
-            'precio' => $kit_precio,
-            'imagen' => $imagen,
-            'cantidad' => $cantidad
-        ];
-    }
-    header('Location: carrito.php');
-    exit;
-}
-
-// FUNCIÓN PARA CALCULAR TOTAL
-function calcularTotal() {
+// Función para calcular total del carrito
+function calcularTotal($carrito) {
     $total = 0;
-    if (isset($_SESSION['carrito'])) {
-        foreach ($_SESSION['carrito'] as $item) {
+    if (!empty($carrito)) {
+        foreach ($carrito as $item) {
             $total += $item['precio'] * $item['cantidad'];
         }
     }
     return $total;
 }
 
-// FUNCIÓN PARA FORMATEAR PRECIO
+// Función para formatear precio
 function formatearPrecio($precio) {
     return '$' . number_format($precio, 0, ',', '.');
 }
+
+// Función para obtener cantidad total de items
+function obtenerCantidadTotal($carrito) {
+    $total = 0;
+    if (!empty($carrito)) {
+        foreach ($carrito as $item) {
+            $total += $item['cantidad'];
+        }
+    }
+    return $total;
+}
+
+// Función para limpiar precio (remover puntos y convertir a float)
+function limpiarPrecio($precio) {
+    if (is_string($precio)) {
+        $precio = str_replace(['.', ','], ['', '.'], $precio);
+    }
+    return floatval($precio);
+}
+
+// Función para generar ID único del item
+function generarIdItem($id, $kit_idx = null) {
+    return $kit_idx !== null ? $id . '-' . $kit_idx : $id;
+}
+
+// Función para validar item del carrito
+function validarItemCarrito($data) {
+    $errores = [];
+    
+    if (empty($data['id'])) {
+        $errores[] = "ID del producto es requerido";
+    }
+    
+    if (empty($data['nombre'])) {
+        $errores[] = "Nombre del producto es requerido";
+    }
+    
+    if (!isset($data['precio']) || $data['precio'] <= 0) {
+        $errores[] = "Precio válido es requerido";
+    }
+    
+    if (!isset($data['cantidad']) || $data['cantidad'] <= 0) {
+        $errores[] = "Cantidad válida es requerida";
+    }
+    
+    return $errores;
+}
+
+// Datos de ejemplo de casas y kits (normalmente vendrían de base de datos)
+$casas = [
+    1 => [
+        'titulo' => 'Casa Prefabricada 21 m²',
+        'imagen' => 'IMG/casa1.jpg'
+    ],
+    2 => [
+        'titulo' => 'Casa Prefabricada 36 m²',
+        'imagen' => 'IMG/casa2.jpg'
+    ],
+    3 => [
+        'titulo' => 'Casa Prefabricada 48 m²',
+        'imagen' => 'IMG/casa3.jpg'
+    ]
+];
+
+$kits = [
+    1 => [
+        0 => ['nombre' => 'Kit Básico', 'precio' => '5000000'],
+        1 => ['nombre' => 'Kit Completo', 'precio' => '7000000'],
+        2 => ['nombre' => 'Kit Premium', 'precio' => '9000000']
+    ],
+    2 => [
+        0 => ['nombre' => 'Kit Estructural', 'precio' => '3000000'],
+        1 => ['nombre' => 'Kit Inicial', 'precio' => '5000000'],
+        2 => ['nombre' => 'Kit Completo', 'precio' => '7000000']
+    ],
+    3 => [
+        0 => ['nombre' => 'Kit Esencial', 'precio' => '8000000'],
+        1 => ['nombre' => 'Kit Integral', 'precio' => '11000000'],
+        2 => ['nombre' => 'Kit Luxury', 'precio' => '15000000']
+    ]
+];
+
+// Variable para mensajes
+$mensaje = '';
+$tipo_mensaje = '';
+
+// Procesar acciones del carrito
+if (isset($_GET['action']) || (isset($_POST['action']))) {
+    $action = isset($_GET['action']) ? $_GET['action'] : $_POST['action'];
+
+    switch ($action) {
+        case 'add':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    // Agregar desde URL (método simple)
+                    $id = validarDatos($_GET['id']);
+                    $nombre = validarDatos($_GET['nombre']);
+                    $precio = limpiarPrecio($_GET['precio']);
+                    $cantidad = isset($_GET['cantidad']) ? intval($_GET['cantidad']) : 1;
+                    $imagen = validarDatos($_GET['imagen']);
+                    
+                    $itemData = [
+                        'id' => $id,
+                        'nombre' => $nombre,
+                        'precio' => $precio,
+                        'cantidad' => $cantidad,
+                        'imagen' => $imagen
+                    ];
+                    
+                } else {
+                    // Agregar desde formulario POST (con kits)
+                    $id = intval($_POST['id']);
+                    $kit_idx = intval($_POST['kit']);
+                    $cantidad = isset($_POST['cantidad']) ? intval($_POST['cantidad']) : 1;
+                    
+                    // Validar que existan los datos
+                    if (!isset($casas[$id]) || !isset($kits[$id][$kit_idx])) {
+                        throw new Exception("Producto o kit no válido");
+                    }
+                    
+                    $nombre = $casas[$id]['titulo'];
+                    $imagen = $casas[$id]['imagen'];
+                    $kit_nombre = $kits[$id][$kit_idx]['nombre'];
+                    $kit_precio = limpiarPrecio($kits[$id][$kit_idx]['precio']);
+                    
+                    $key = generarIdItem($id, $kit_idx);
+                    
+                    $itemData = [
+                        'id' => $key,
+                        'nombre' => $nombre,
+                        'kit' => $kit_nombre,
+                        'precio' => $kit_precio,
+                        'cantidad' => $cantidad,
+                        'imagen' => $imagen
+                    ];
+                }
+                
+                // Validar datos del item
+                $errores = validarItemCarrito($itemData);
+                if (!empty($errores)) {
+                    throw new Exception("Datos inválidos: " . implode(", ", $errores));
+                }
+                
+                // Agregar al carrito
+                $itemId = $itemData['id'];
+                if (isset($_SESSION['carrito'][$itemId])) {
+                    $_SESSION['carrito'][$itemId]['cantidad'] += $itemData['cantidad'];
+                } else {
+                    $_SESSION['carrito'][$itemId] = $itemData;
+                }
+                
+                $mensaje = "Producto agregado al carrito exitosamente";
+                $tipo_mensaje = "success";
+                
+            } catch (Exception $e) {
+                $mensaje = "Error al agregar producto: " . $e->getMessage();
+                $tipo_mensaje = "error";
+            }
+            
+            header("Location: carrito.php" . ($mensaje ? "?msg=" . urlencode($mensaje) . "&type=" . $tipo_mensaje : ""));
+            exit;
+
+        case 'update':
+            try {
+                if (isset($_POST['updates']) && is_array($_POST['updates'])) {
+                    // Actualización múltiple
+                    foreach ($_POST['updates'] as $itemId => $nuevaCantidad) {
+                        $nuevaCantidad = intval($nuevaCantidad);
+                        if (isset($_SESSION['carrito'][$itemId])) {
+                            if ($nuevaCantidad > 0) {
+                                $_SESSION['carrito'][$itemId]['cantidad'] = $nuevaCantidad;
+                            } else {
+                                unset($_SESSION['carrito'][$itemId]);
+                            }
+                        }
+                    }
+                    $mensaje = "Carrito actualizado exitosamente";
+                } else {
+                    // Actualización individual
+                    $itemId = validarDatos($_POST['item_id']);
+                    $cantidad = intval($_POST['cantidad']);
+                    
+                    if (isset($_SESSION['carrito'][$itemId])) {
+                        if ($cantidad > 0) {
+                            $_SESSION['carrito'][$itemId]['cantidad'] = $cantidad;
+                            $mensaje = "Cantidad actualizada exitosamente";
+                        } else {
+                            unset($_SESSION['carrito'][$itemId]);
+                            $mensaje = "Producto eliminado del carrito";
+                        }
+                    } else {
+                        throw new Exception("Producto no encontrado en el carrito");
+                    }
+                }
+                
+                $tipo_mensaje = "success";
+                
+            } catch (Exception $e) {
+                $mensaje = "Error al actualizar: " . $e->getMessage();
+                $tipo_mensaje = "error";
+            }
+            
+            header("Location: carrito.php" . ($mensaje ? "?msg=" . urlencode($mensaje) . "&type=" . $tipo_mensaje : ""));
+            exit;
+
+        case 'remove':
+            try {
+                $itemId = isset($_GET['id']) ? validarDatos($_GET['id']) : validarDatos($_POST['item_id']);
+                
+                if (isset($_SESSION['carrito'][$itemId])) {
+                    unset($_SESSION['carrito'][$itemId]);
+                    $mensaje = "Producto eliminado del carrito exitosamente";
+                    $tipo_mensaje = "success";
+                } else {
+                    throw new Exception("Producto no encontrado en el carrito");
+                }
+                
+            } catch (Exception $e) {
+                $mensaje = "Error al eliminar producto: " . $e->getMessage();
+                $tipo_mensaje = "error";
+            }
+            
+            header("Location: carrito.php" . ($mensaje ? "?msg=" . urlencode($mensaje) . "&type=" . $tipo_mensaje : ""));
+            exit;
+
+        case 'clear':
+            $_SESSION['carrito'] = [];
+            $mensaje = "Carrito vaciado exitosamente";
+            $tipo_mensaje = "success";
+            
+            header("Location: carrito.php" . ($mensaje ? "?msg=" . urlencode($mensaje) . "&type=" . $tipo_mensaje : ""));
+            exit;
+
+        case 'checkout':
+            try {
+                if (empty($_SESSION['carrito'])) {
+                    throw new Exception("El carrito está vacío");
+                }
+                
+                // Validar datos del formulario
+                $nombre = validarDatos($_POST['nombre']);
+                $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+                $telefono = validarDatos($_POST['telefono']);
+                $direccion = validarDatos($_POST['direccion'] ?? '');
+                $notas = validarDatos($_POST['notas'] ?? '');
+                
+                if (empty($nombre) || !$email || empty($telefono)) {
+                    throw new Exception("Nombre, email válido y teléfono son requeridos");
+                }
+                
+                // Aquí puedes procesar el pedido:
+                // - Guardar en base de datos
+                // - Enviar email de confirmación
+                // - Procesar pago
+                // - Etc.
+                
+                $pedido = [
+                    'fecha' => date('Y-m-d H:i:s'),
+                    'cliente' => [
+                        'nombre' => $nombre,
+                        'email' => $email,
+                        'telefono' => $telefono,
+                        'direccion' => $direccion,
+                        'notas' => $notas
+                    ],
+                    'items' => $_SESSION['carrito'],
+                    'total' => calcularTotal($_SESSION['carrito'])
+                ];
+                
+                // Simular procesamiento del pedido
+                // En producción, aquí harías:
+                // $pedidoId = guardarPedido($pedido);
+                // enviarEmailConfirmacion($pedido);
+                
+                // Limpiar carrito después del pedido exitoso
+                $_SESSION['carrito'] = [];
+                
+                // Redirigir a página de confirmación
+                header("Location: gracias.php?pedido_id=" . uniqid());
+                exit;
+                
+            } catch (Exception $e) {
+                $mensaje = "Error al procesar pedido: " . $e->getMessage();
+                $tipo_mensaje = "error";
+            }
+            break;
+    }
+}
+
+// Procesar mensajes de la URL
+if (isset($_GET['msg'])) {
+    $mensaje = urldecode($_GET['msg']);
+    $tipo_mensaje = $_GET['type'] ?? 'info';
+}
+
+// Calcular totales para mostrar
+$subtotal = calcularTotal($_SESSION['carrito']);
+$iva = $subtotal * 0.19;
+$total = $subtotal + $iva;
+$cantidadTotal = obtenerCantidadTotal($_SESSION['carrito']);
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrito de Compras - Green Valley</title>
     <style>
+        :root {
+            --primary-color: #7cb342;
+            --primary-dark: #689f38;
+            --secondary-color: #2c3e50;
+            --accent-color: #25d366;
+            --text-light: #7f8c8d;
+            --background-light: #f8f9fa;
+            --white: #ffffff;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -164,10 +368,10 @@ function formatearPrecio($precio) {
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: #f8f9fa;
+            color: var(--secondary-color);
+            background: var(--background-light);
         }
 
         .container {
@@ -176,102 +380,71 @@ function formatearPrecio($precio) {
             padding: 0 20px;
         }
 
-        /* Top Bar Styles */
-        .top-bar {
-            background: #2c3e50;
-            color: white;
-            padding: 8px 0;
-            font-size: 13px;
-        }
-
-        .top-bar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .contact-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .contact-item {
+        /* Messages */
+        .message {
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
         }
 
-        .whatsapp-buttons {
-            display: flex;
-            gap: 8px;
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid var(--success-color);
         }
 
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: 11px;
-            transition: background 0.3s;
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid var(--danger-color);
         }
 
-        .whatsapp-btn:hover {
-            background: #128c7e;
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
         }
 
-        /* Header Styles */
+        /* Header simplificado para el ejemplo */
         header {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background: var(--white);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            padding: 15px 0;
+            margin-bottom: 30px;
         }
 
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
         }
 
-        .logo-image {
-            height: 45px;
-            width: auto;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-
-        nav a {
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #7cb342;
         }
 
         .cart-icon {
             position: relative;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            background: rgba(124, 179, 66, 0.2);
+            color: var(--primary-color);
         }
 
         .cart-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
+            top: 2px;
+            right: 2px;
+            background: var(--danger-color);
             color: white;
             border-radius: 50%;
             width: 18px;
@@ -282,18 +455,18 @@ function formatearPrecio($precio) {
             font-size: 11px;
         }
 
-        /* Cart Content */
+        /* Cart Styles */
         .cart-container {
-            padding: 40px 0;
-            min-height: 70vh;
+            padding: 30px 0;
+            min-height: 60vh;
         }
 
         .cart-title {
             font-size: 2.5rem;
-            color: #2c3e50;
+            color: var(--secondary-color);
             margin-bottom: 2rem;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .cart-content {
@@ -304,10 +477,10 @@ function formatearPrecio($precio) {
         }
 
         .cart-items {
-            background: white;
-            border-radius: 10px;
+            background: var(--white);
+            border-radius: var(--border-radius);
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 25px var(--shadow-light);
         }
 
         .cart-item {
@@ -325,46 +498,40 @@ function formatearPrecio($precio) {
 
         .item-image img {
             width: 100px;
-            height: 80px;
+            height: 75px;
             object-fit: cover;
             border-radius: 8px;
         }
 
         .item-info h3 {
-            font-size: 1.2rem;
-            color: #2c3e50;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
             margin-bottom: 5px;
         }
 
-        .item-info p {
-            color: #666;
+        .item-info .kit-info {
+            color: var(--text-light);
             font-size: 14px;
         }
 
-        .item-price {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #7cb342;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quantity-btn {
-            background: #7cb342;
+        .kit-badge {
+            background: var(--primary-color);
             color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .item-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .quantity-form {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 5px;
         }
 
         .quantity-input {
@@ -372,58 +539,57 @@ function formatearPrecio($precio) {
             text-align: center;
             padding: 5px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
-        .remove-btn {
-            background: #e74c3c;
-            color: white;
+        .btn {
+            padding: 8px 16px;
             border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 12px;
-        }
-
-        .remove-btn:hover {
-            background: #c0392b;
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-cart h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .continue-shopping {
-            display: inline-block;
-            background: #7cb342;
-            color: white;
-            padding: 12px 25px;
+            font-weight: bold;
+            transition: var(--transition);
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
         }
 
         /* Cart Summary */
         .cart-summary {
-            background: white;
-            border-radius: 10px;
+            background: var(--white);
+            border-radius: var(--border-radius);
             padding: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 25px var(--shadow-light);
             height: fit-content;
+            position: sticky;
+            top: 20px;
         }
 
         .summary-title {
             font-size: 1.5rem;
-            color: #2c3e50;
+            color: var(--secondary-color);
             margin-bottom: 20px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .summary-row {
@@ -434,21 +600,20 @@ function formatearPrecio($precio) {
             border-bottom: 1px solid #f0f0f0;
         }
 
-        .summary-row:last-child {
-            border-bottom: none;
+        .summary-row:last-of-type {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 700;
             font-size: 1.2rem;
-            font-weight: 600;
-            color: #2c3e50;
+            color: var(--secondary-color);
         }
 
         .total-amount {
-            color: #7cb342;
-            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
         /* Checkout Form */
         .checkout-form {
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .form-group {
@@ -457,112 +622,65 @@ function formatearPrecio($precio) {
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--secondary-color);
         }
 
         .form-control {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 14px;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #7cb342;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(124, 179, 66, 0.2);
         }
 
         .checkout-btn {
             width: 100%;
-            background: #7cb342;
+            background: var(--primary-color);
             color: white;
             padding: 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: var(--transition);
         }
 
         .checkout-btn:hover {
-            background: #689f38;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        /* Footer */
-        footer {
-            background: #2c3e50;
-            color: white;
-            padding: 40px 0 15px;
-            margin-top: 40px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 25px;
-        }
-
-        .footer-column h3 {
-            color: #7cb342;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-column ul li a {
-            color: #bdc3c7;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .footer-column ul li a:hover {
-            color: #7cb342;
-        }
-
-        .copyright {
+        /* Empty Cart */
+        .empty-cart {
             text-align: center;
-            padding-top: 15px;
-            border-top: 1px solid #34495e;
-            color: #bdc3c7;
-            font-size: 13px;
+            padding: 60px 20px;
+            color: var(--text-light);
         }
 
-        /* WhatsApp Float Button */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25d366;
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            background: var(--primary-color);
             color: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            padding: 12px 25px;
             text-decoration: none;
-            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.3);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.05);
+            border-radius: 25px;
+            margin-top: 20px;
+            font-weight: bold;
         }
 
         /* Responsive */
@@ -571,141 +689,91 @@ function formatearPrecio($precio) {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
-
+            
             .cart-item {
                 grid-template-columns: 80px 1fr;
                 gap: 15px;
             }
-
-            .item-price, .quantity-controls, .remove-btn {
+            
+            .item-price, .quantity-form, .btn {
                 grid-column: 2;
                 margin-top: 10px;
-            }
-
-            .top-bar-content {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .contact-info {
-                justify-content: center;
-                font-size: 12px;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 8px;
+                justify-self: start;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-bar-content">
-                <div class="contact-info">
-                    <div class="contact-item">📍 Av. Padre Jorge Alessandri KM 22, San Bernardo, RM.</div>
-                    <div class="contact-item">📧 contacto@casasgreenvalley.cl</div>
-                    <div class="contact-item">📞 Tel.: +56 2 2583 2001</div>
-                </div>
-                <div class="whatsapp-buttons">
-                    <a href="https://wa.me/56956397365" class="whatsapp-btn" target="_blank">💬 +569 5309 7365</a>
-                    <a href="https://wa.me/56987037917" class="whatsapp-btn" target="_blank">💬 +569 8703 7917</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
     <header>
         <div class="container header-container">
-            <a href="index.php" class="logo">
-                <img src="logoGreenValley.jpg" alt="Green Valley" class="logo-image">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="sobre-nosotros.php">Nuestra Empresa</a></li>
-                    <li><a href="index.php#catalog">Casas prefabricadas</a></li>
-                    <li><a href="index.php#llave">Llave en mano</a></li>
-                    <li><a href="index.php#proyectos">Proyectos</a></li>
-                    <li><a href="login.php">Login</a></li>
-                    <li><a href="#index.phpcontacto">Contacto</a></li>
-                </ul>
-            </nav>
+            <a href="index.php" class="logo">Green Valley</a>
             <div class="cart-icon">
-                🛒<span class="cart-badge"><?php echo count($_SESSION['carrito']); ?></span>
+                🛒<span class="cart-badge"><?php echo $cantidadTotal; ?></span>
             </div>
         </div>
     </header>
 
-    <!-- Cart Container -->
     <section class="cart-container">
         <div class="container">
             <h1 class="cart-title">Carrito de Compras</h1>
 
-            <?php if (empty($_SESSION['carrito'])): ?>
-                <!-- CARRITO VACÍO -->
-                <div class="cart-items">
-                    <div class="empty-cart">
-                        <h3>Tu carrito está vacío</h3>
-                        <p>¡Agrega algunas casas prefabricadas para comenzar!</p>
-                        <a href="index.php#catalog" class="continue-shopping">Continuar Comprando</a>
-                    </div>
+            <?php if ($mensaje): ?>
+                <div class="message <?php echo $tipo_mensaje; ?>">
+                    <?php echo htmlspecialchars($mensaje); ?>
                 </div>
-            <?php else: ?>
-                <!-- CARRITO CON PRODUCTOS -->
+            <?php endif; ?>
+
+            <?php if (!empty($_SESSION['carrito'])): ?>
                 <div class="cart-content">
                     <div class="cart-items">
-                        <?php foreach ($_SESSION['carrito'] as $index => $item): ?>
-                            <div class="cart-item">
-                                <div class="item-image">
-                                    <img src="<?php echo htmlspecialchars($item['imagen']); ?>" alt="<?php echo htmlspecialchars($item['nombre']); ?>">
+                        <!-- Formulario para actualización múltiple -->
+                        <form method="POST" action="carrito.php">
+                            <input type="hidden" name="action" value="update">
+                            
+                            <?php foreach ($_SESSION['carrito'] as $itemId => $item): ?>
+                                <div class="cart-item">
+                                    <div class="item-image">
+                                        <img src="<?php echo htmlspecialchars($item['imagen']); ?>" 
+                                             alt="<?php echo htmlspecialchars($item['nombre']); ?>">
+                                    </div>
+                                    <div class="item-info">
+                                        <h3><?php echo htmlspecialchars($item['nombre']); ?></h3>
+                                        <?php if (isset($item['kit'])): ?>
+                                            <div class="kit-info">
+                                                Kit: <span class="kit-badge"><?php echo htmlspecialchars($item['kit']); ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="item-price">
+                                        <?php echo formatearPrecio($item['precio']); ?>
+                                    </div>
+                                    <div class="quantity-form">
+                                        <input type="number" 
+                                               name="updates[<?php echo htmlspecialchars($itemId); ?>]" 
+                                               value="<?php echo $item['cantidad']; ?>" 
+                                               min="0" 
+                                               class="quantity-input">
+                                    </div>
+                                    <div>
+                                        <a href="carrito.php?action=remove&id=<?php echo urlencode($itemId); ?>" 
+                                           class="btn btn-danger"
+                                           onclick="return confirm('¿Eliminar este producto?')">
+                                            Eliminar
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="item-info">
-                                    <h3><?php echo htmlspecialchars($item['nombre']); ?></h3>
-                                    <p>Kit: <strong><?php echo htmlspecialchars($item['kit']); ?></strong></p>
-                                </div>
-                                <div class="item-price">
-                                    <?php echo formatearPrecio($item['precio']); ?>
-                                </div>
-                                <div class="quantity-controls">
-                                    <form method="post" style="display: inline;">
-                                        <input type="hidden" name="action" value="update">
-                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                        <button type="submit" name="cantidad" value="<?php echo $item['cantidad'] - 1; ?>" class="quantity-btn">-</button>
-                                    </form>
-                                    <input type="number" value="<?php echo $item['cantidad']; ?>" class="quantity-input" readonly>
-                                    <form method="post" style="display: inline;">
-                                        <input type="hidden" name="action" value="update">
-                                        <input type="hidden" name="index" value="<?php echo $index; ?>">
-                                        <button type="submit" name="cantidad" value="<?php echo $item['cantidad'] + 1; ?>" class="quantity-btn">+</button>
-                                    </form>
-                                </div>
-                                <div>
-                                    <form method="get">
-                                        <input type="hidden" name="action" value="remove">
-                                        <input type="hidden" name="id" value="<?php echo $index; ?>">
-                                        <button type="submit" class="remove-btn">Eliminar</button>
-                                    </form>
-                                </div>
+                            <?php endforeach; ?>
+                            
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button type="submit" class="btn btn-primary">Actualizar Carrito</button>
+                                <a href="carrito.php?action=clear" class="btn btn-secondary"
+                                   onclick="return confirm('¿Vaciar todo el carrito?')">Vaciar Carrito</a>
                             </div>
-                        <?php endforeach; ?>
+                        </form>
                     </div>
 
-                    <!-- RESUMEN DEL CARRITO -->
                     <div class="cart-summary">
                         <h3 class="summary-title">Resumen del Pedido</h3>
-                        
-                        <?php 
-                        $subtotal = 0;
-                        foreach ($_SESSION['carrito'] as $item) {
-                            $subtotal += $item['precio'] * $item['cantidad'];
-                        }
-                        $iva = $subtotal * 0.19; // 19% IVA - ADAPTAR SEGÚN TU PAÍS
-                        $total = $subtotal + $iva;
-                        ?>
                         
                         <div class="summary-row">
                             <span>Subtotal:</span>
@@ -720,8 +788,7 @@ function formatearPrecio($precio) {
                             <span class="total-amount"><?php echo formatearPrecio($total); ?></span>
                         </div>
 
-                        <!-- FORMULARIO DE CHECKOUT -->
-                        <form method="post" class="checkout-form">
+                        <form class="checkout-form" method="POST" action="carrito.php">
                             <input type="hidden" name="action" value="checkout">
                             
                             <div class="form-group">
@@ -746,104 +813,45 @@ function formatearPrecio($precio) {
                             
                             <div class="form-group">
                                 <label for="notas">Notas Adicionales</label>
-                                <textarea id="notas" name="notas" class="form-control" rows="3" placeholder="Instrucciones especiales, comentarios, etc."></textarea>
+                                <textarea id="notas" name="notas" class="form-control" rows="3"></textarea>
                             </div>
                             
                             <button type="submit" class="checkout-btn">Finalizar Compra</button>
                         </form>
                     </div>
                 </div>
+            <?php else: ?>
+                <div class="cart-items">
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h3>Tu carrito está vacío</h3>
+                        <p>¡Agrega algunas casas prefabricadas para comenzar!</p>
+                        <a href="index.php" class="continue-shopping">Continuar Comprando</a>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>Green Valley Estructuras</h3>
-                    <p style="color: #bdc3c7; margin-bottom: 20px; font-size: 14px;">
-                        Especialistas en casas prefabricadas de alta calidad. Transformamos tus sueños en realidad con diseños únicos y construcción eficiente.
-                    </p>
-                    <div style="color: #bdc3c7; font-size: 13px;">
-                        <p>📍 Av. Padre Jorge Alessandri KM 22</p>
-                        <p>San Bernardo, Región Metropolitana</p>
-                        <p>📞 +56 2 2583 2001</p>
-                        <p>📧 contacto@casasgreenvalley.cl</p>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>Nuestros Servicios</h3>
-                    <ul>
-                        <li><a href="index.html#catalog">Casas Prefabricadas</a></li>
-                        <li><a href="#">Tiny Houses</a></li>
-                        <li><a href="#">Casas de Lujo</a></li>
-                        <li><a href="#">Diseño Personalizado</a></li>
-                        <li><a href="#">Llave en Mano</a></li>
-                        <li><a href="#">Asesoría Técnica</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Información</h3>
-                    <ul>
-                        <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros Proyectos</a></li>
-                        <li><a href="#">Proceso de Construcción</a></li>
-                        <li><a href="#">Garantías</a></li>
-                        <li><a href="#">Financiamiento</a></li>
-                        <li><a href="#">Preguntas Frecuentes</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Síguenos</h3>
-                    <ul>
-                        <li><a href="#">Facebook</a></li>
-                        <li><a href="#">Instagram</a></li>
-                        <li><a href="#">YouTube</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                    </ul>
-                    <div style="margin-top: 15px;">
-                        <h4 style="color: #7cb342; margin-bottom: 8px; font-size: 14px;">WhatsApp</h4>
-                        <a href="https://wa.me/56956397365" style="color: #25d366; text-decoration: none; font-size: 13px;">+569 5309 7365</a><br>
-                        <a href="https://wa.me/56987037917" style="color: #25d366; text-decoration: none; font-size: 13px;">+569 8703 7917</a>
-                    </div>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Valley Estructuras. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/56956397365" class="whatsapp-float" target="_blank">💬</a>
-
     <script>
-        /*
-        // Actualizar badge del carrito
-        function updateCartBadge() {
-            const badge = document.querySelector('.cart-badge');
-            if (badge) {
-                badge.textContent = <?php echo count($_SESSION['carrito']); ?>;
-            }
-        }
-        */
-
-        // Confirmar eliminación
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                if (!confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-                    e.preventDefault();
-                }
+        // Auto-submit form when quantity changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (confirm('¿Actualizar cantidad?')) {
+                        this.closest('form').submit();
+                    }
+                });
             });
         });
-
-        // Validar formulario de checkout
-        document.querySelector('.checkout-form').addEventListener('submit', function(e) {
-            const nombre = document.getElementById('nombre').value;
-            const email = document.getElementById('email').value;
-            const telefono = document.getElementById('telefono').value;
+        
+        // Form validation
+        document.querySelector('.checkout-form')?.addEventListener('submit', function(e) {
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
             
             if (!nombre || !email || !telefono) {
                 e.preventDefault();
@@ -851,10 +859,7 @@ function formatearPrecio($precio) {
                 return false;
             }
             
-            if (!confirm('¿Confirmas tu pedido? Se procesará inmediatamente.')) {
-                e.preventDefault();
-                return false;
-            }
+            return confirm('¿Confirmar pedido?');
         });
     </script>
 </body>

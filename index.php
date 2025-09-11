@@ -1,56 +1,24 @@
-<?php
-session_start();
-
-$current_page = basename($_SERVER['PHP_SELF']);
-
-if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSION['user_role'])) {
-    $user_role = $_SESSION['user_role'];
-    switch ($user_role) {
-        case 'admin':
-            header('Location: admin-dashboard.php');
-            exit();
-        case 'employee':
-            header('Location: vendedor-dashboard.php');
-            exit();
-        case 'client':
-            header('Location: client-dashboard.php');
-            exit();
-        default:
-            header('Location: login.php');
-            exit();
-    }
-} elseif (isset($_SESSION['usuario']) && isset($_SESSION['id_role'])) {
-    // Fallback al sistema anterior - mapear a nuevo sistema y redirigir
-    $id_role = $_SESSION['id_role'];
-    switch($id_role) {
-        case 1: // Dashboard -> admin
-        case 3: // Superadmin -> admin
-            $_SESSION['user_role'] = 'administrador'; // Establecer el nuevo rol para futuras verificaciones
-            header('Location: admin-dashboard.php');
-            exit();
-        case 2: // Usuario -> client
-            $_SESSION['user_role'] = 'client'; // Establecer el nuevo rol para futuras verificaciones
-            header('Location: client-dashboard.php');
-            exit();
-        case 5: // Admin ranking -> employee
-            $_SESSION['user_role'] = 'employee'; // Establecer el nuevo rol para futuras verificaciones
-            header('Location: vendedor-dashboard.php');
-            exit();
-        default:
-            header('Location: login.php');
-            exit();
-    }
-}
-// Si no hay sesión activa, el script continúa para mostrar la página de inicio normal.
-?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Green Valley - Casas Prefabricadas</title>
     <style>
+        :root {
+            --primary-color: #7cb342;
+            --primary-dark: #689f38;
+            --secondary-color: #2c3e50;
+            --accent-color: #25d366;
+            --text-light: #7f8c8d;
+            --background-light: #f8f9fa;
+            --white: #ffffff;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -58,9 +26,10 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--secondary-color);
+            overflow-x: hidden;
         }
 
         .container {
@@ -69,12 +38,30 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
             padding: 0 20px;
         }
 
-        /* Top Bar Styles */
+        /* Enhanced Header */
         .top-bar {
-            background: #2c3e50;
+            background: var(--secondary-color);
             color: white;
-            padding: 10px 0;
-            font-size: 14px;
+            padding: 8px 0;
+            font-size: 13px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .top-bar-content {
@@ -82,6 +69,8 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
         }
 
         .contact-info {
@@ -94,37 +83,43 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
             display: flex;
             align-items: center;
             gap: 5px;
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            transform: translateY(-1px);
         }
 
         .whatsapp-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .whatsapp-btn {
-            background: #25d366;
+            background: var(--accent-color);
             color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
-            transition: background 0.3s;
+            font-size: 11px;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
         }
 
         .whatsapp-btn:hover {
             background: #128c7e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
         }
 
-        /* Header Styles */
+        /* Enhanced Header */
         header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: var(--white);
+            box-shadow: 0 4px 20px var(--shadow-light);
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
         .header-container {
@@ -137,6 +132,11 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
         .logo-image {
             height: 50px;
             width: auto;
+            transition: var(--transition);
+        }
+
+        .logo-image:hover {
+            transform: scale(1.05);
         }
 
         nav ul {
@@ -147,222 +147,262 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
 
         nav a {
             text-decoration: none;
-            color: #333;
+            color: var(--secondary-color);
             font-weight: 500;
-            transition: color 0.3s;
+            position: relative;
+            transition: var(--transition);
+            padding: 8px 16px;
+            border-radius: 25px;
         }
 
         nav a:hover {
-            color: #7cb342;
+            color: var(--primary-color);
+            background: rgba(124, 179, 66, 0.1);
         }
 
-        .logout-btn {
-            background: #e74c3c;
-            color: white !important;
-            padding: 8px 15px;
-            border-radius: 20px;
-            transition: background 0.3s;
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition);
         }
 
-        .logout-btn:hover {
-            background: #c0392b;
-        }
-
-        .user-greeting {
-            color: #7cb342;
-            font-weight: 600;
+        nav a:hover::after {
+            width: 60%;
         }
 
         .cart-icon {
             position: relative;
             font-size: 24px;
             cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: var(--transition);
+            background: rgba(124, 179, 66, 0.1);
+        }
+
+        .cart-icon:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
         }
 
         .cart-badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: 2px;
+            right: 2px;
             background: #e74c3c;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
+            animation: pulse 2s infinite;
         }
 
-        /* Hero Section - IMPROVED */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Modern Hero Section */
         .hero {
-            position: relative;
             min-height: 100vh;
             display: flex;
             align-items: center;
+            background: linear-gradient(135deg, #0c5217ff 0%, #02b614ff 100%);
+            position: relative;
             overflow: hidden;
         }
 
-        /* Fondo con imágenes */
-        .hero-background {
+        .hero::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 226, 0.3) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
         }
 
-        .hero-background img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .hero-background img.active {
-            opacity: 1;
-        }
-
-        /* Overlay para mejorar legibilidad del texto */
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg,
-                    rgba(0, 0, 0, 0.6) 0%,
-                    rgba(0, 0, 0, 0.3) 50%,
-                    rgba(0, 0, 0, 0.5) 100%);
-            z-index: 2;
-        }
-
-        .hero .container {
-            position: relative;
-            z-index: 3;
-            width: 100%;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .hero-content {
-            max-width: 600px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
-        .hero-content h1 {
+        .hero-text {
+            color: white;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero-text h1 {
             font-size: 3.5rem;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 1.5rem;
             line-height: 1.2;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .hero-content p {
-            font-size: 1.3rem;
+        .hero-text p {
+            font-size: 1.2rem;
             margin-bottom: 2rem;
-            opacity: 0.95;
+            opacity: 0.9;
+            line-height: 1.6;
         }
 
-        .cta-button {
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+            transition: var(--transition);
+        }
+
+        .hero-image img:hover {
+            transform: perspective(1000px) rotateY(-10deg) rotateX(2deg) scale(1.02);
+        }
+
+        /* Enhanced Buttons */
+        .btn {
             display: inline-block;
-            background: linear-gradient(45deg, #7cb342, #8bc34a);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
+            padding: 15px 35px;
             border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(124, 179, 66, 0.3);
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(124, 179, 66, 0.4);
-            background: linear-gradient(45deg, #8bc34a, #9ccc65);
-        }
-
-        /* Navegación de imágenes */
-        .hero-nav {
+        .btn::before {
+            content: '';
             position: absolute;
-            bottom: 30px;
-            right: 30px;
-            z-index: 4;
-            display: flex;
-            gap: 10px;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition);
         }
 
-        .nav-arrow {
-            background: rgba(255, 255, 255, 0.2);
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
             color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(124, 179, 66, 0.3);
         }
 
-        .nav-arrow:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(124, 179, 66, 0.4);
         }
 
-        /* Indicadores de imagen */
-        .hero-indicators {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-            display: flex;
-            gap: 10px;
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
         }
 
-        .indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
         }
 
-        .indicator.active {
-            background: white;
-            transform: scale(1.2);
-        }
-
-        /* Features Section */
+        /* Enhanced Features Section */
         .features {
-            padding: 80px 0;
-            background: #f8f9fa;
+            padding: 100px 0;
+            background: var(--background-light);
+            position: relative;
+        }
+
+        .features::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: var(--white);
+            clip-path: polygon(0 100%, 100% 0, 100% 100%);
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
-            color: #2c3e50;
+            color: var(--secondary-color);
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            border-radius: 2px;
         }
 
         .section-subtitle {
             text-align: center;
             font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 3rem;
+            color: var(--text-light);
+            margin-bottom: 4rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
@@ -371,62 +411,88 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 40px;
             margin-top: 50px;
         }
 
         .feature-card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            transform: translateX(-100%);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(0);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px var(--shadow-medium);
         }
 
         .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .feature-card h3 {
             font-size: 1.5rem;
             margin-bottom: 15px;
-            color: #2c3e50;
+            color: var(--secondary-color);
+            font-weight: 600;
         }
 
         .feature-card p {
-            color: #7f8c8d;
+            color: var(--text-light);
             line-height: 1.6;
         }
 
-        /* Catalog Section */
+        /* Enhanced Catalog Section */
         .catalog {
-            padding: 80px 0;
-            background: white;
+            padding: 100px 0;
+            background: var(--white);
         }
 
         .houses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
+            gap: 40px;
             margin-top: 50px;
         }
 
         .house-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--white);
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: var(--transition);
+            position: relative;
         }
 
         .house-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 25px 50px var(--shadow-medium);
         }
 
         .house-image {
@@ -435,150 +501,191 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
             overflow: hidden;
         }
 
+        .house-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(124, 179, 66, 0.1), transparent);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 2;
+        }
+
+        .house-card:hover .house-image::before {
+            opacity: 1;
+        }
+
         .house-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .house-card:hover .house-image img {
+            transform: scale(1.1);
         }
 
         .house-badge {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: #7cb342;
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
             font-size: 12px;
             font-weight: bold;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(124, 179, 66, 0.3);
         }
 
         .house-info {
-            padding: 25px;
+            padding: 30px;
         }
 
         .house-title {
             font-size: 1.5rem;
             margin-bottom: 10px;
-            color: #2c3e50;
+            color: var(--secondary-color);
+            font-weight: 600;
         }
 
         .house-price {
             font-size: 1.8rem;
             font-weight: bold;
-            color: #7cb342;
-            margin-bottom: 15px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
         }
 
         .house-details {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 14px;
-            color: #7f8c8d;
+            color: var(--text-light);
+            flex-wrap: wrap;
         }
 
         .house-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: #7cb342;
+        /* Enhanced Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #34495e 100%);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background: #689f38;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #7cb342;
-            border: 2px solid #7cb342;
-        }
-
-        .btn-secondary:hover {
-            background: #7cb342;
-            color: white;
-        }
-
-        /* Quote Section */
-        .quote-section {
             padding: 80px 0;
-            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.03"><polygon points="1000,100 1000,0 0,100"/></svg>');
+            background-size: 100% 100px;
+            background-repeat: no-repeat;
         }
 
-        .form-row {
+        .contact-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .contact-info h3 {
+            letter-spacing: 2px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
-            margin-bottom: 20px;
         }
 
         .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #2c3e50;
+            position: relative;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
             font-size: 16px;
-            transition: border-color 0.3s ease;
+            transition: var(--transition);
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #7cb342;
+            border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(124, 179, 66, 0.3);
         }
 
-        /* Footer */
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Enhanced Footer */
         footer {
-            background: #2c3e50;
-            color: white;
-            padding: 50px 0 20px;
+            background: var(--background-light);
+            color: var(--secondary-color);
+            padding: 60px 0 30px;
+            border-top: 4px solid var(--primary-color);
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 40px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
         }
 
         .footer-column h3 {
-            color: #7cb342;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--primary-color);
         }
 
         .footer-column ul {
@@ -590,28 +697,23 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
         }
 
         .footer-column ul li a {
-            color: #bdc3c7;
+            color: var(--text-light);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: var(--transition);
+            position: relative;
         }
 
         .footer-column ul li a:hover {
-            color: #7cb342;
+            color: var(--primary-color);
+            padding-left: 5px;
         }
 
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #34495e;
-            color: #bdc3c7;
-        }
-
-        /* WhatsApp Float Button */
+        /* Enhanced WhatsApp Float */
         .whatsapp-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #25d366;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, var(--accent-color), #128c7e);
             color: white;
             width: 60px;
             height: 60px;
@@ -621,35 +723,41 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
             justify-content: center;
             font-size: 24px;
             text-decoration: none;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .whatsapp-float:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5);
+            animation: none;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-content h1 {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
                 font-size: 2.5rem;
             }
 
-            .hero-content p {
-                font-size: 1.1rem;
+            .contact-content {
+                grid-template-columns: 1fr;
             }
 
-            .hero-nav {
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .nav-arrow {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .top-bar-content {
@@ -665,46 +773,22 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                 flex-direction: column;
                 gap: 10px;
             }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .house-actions {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
-
 <body>
     <!-- Top Bar -->
     <div class="top-bar">
         <div class="container">
             <div class="top-bar-content">
                 <div class="contact-info">
-                    <div class="contact-item">
-                        <span>📍</span>
-                        <span>Av. Padre Jorge Alessandri KM 22, San Bernardo, RM.</span>
-                    </div>
-                    <div class="contact-item">
-                        <span>📧</span>
-                        <span>contacto@casasgreenvalley.cl</span>
-                    </div>
-                    <div class="contact-item">
-                        <span>📞</span>
-                        <span>Tel.: +56 2 2583 2001</span>
-                    </div>
+                    <div class="contact-item">📍 Av. Padre Jorge Alessandri KM 22, San Bernardo, RM.</div>
+                    <div class="contact-item">📧 contacto@casasgreenvalley.cl</div>
+                    <div class="contact-item">📞 Tel.: +56 2 2583 2001</div>
                 </div>
                 <div class="whatsapp-buttons">
-                    <a href="https://wa.me/56956397365" class="whatsapp-btn" target="_blank">
-                        <span>💬</span>
-                        <span>+569 5309 7365</span>
-                    </a>
-                    <a href="https://wa.me/56987037917" class="whatsapp-btn" target="_blank">
-                        <span>💬</span>
-                        <span>+569 8703 7917</span>
-                    </a>
+                    <a href="https://wa.me/56956397365" class="whatsapp-btn" target="_blank">💬 +569 5309 7365</a>
+                    <a href="https://wa.me/56987037917" class="whatsapp-btn" target="_blank">💬 +569 8703 7917</a>
                 </div>
             </div>
         </div>
@@ -721,79 +805,30 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                     <li><a href="index.php">Home</a></li>
                     <li><a href="sobrenosotros.php">Nuestra Empresa</a></li>
                     <li><a href="#catalog">Casas prefabricadas</a></li>
-                    <li><a href="#llave">Llave en mano</a></li>
-                    <li><a href="#proyectos">Proyectos</a></li>
-                    <?php if (isset($_SESSION['user_id'])): // Usar user_id para verificar si hay sesión activa ?>
-                        <li>
-                            <?php
-                            $dashboard_link = 'login.php'; // Enlace por defecto si el rol no está definido
-                            if (isset($_SESSION['user_role'])) {
-                                switch ($_SESSION['user_role']) {
-                                    case 'admin':
-                                        $dashboard_link = 'admin-dashboard.php';
-                                        break;
-                                    case 'employee':
-                                        $dashboard_link = 'employee-dashboard.php';
-                                        break;
-                                    case 'client':
-                                        $dashboard_link = 'client-dashboard.php';
-                                        break;
-                                }
-                            }
-                            ?>
-                            <a href="<?php echo $dashboard_link; ?>">Dashboard</a>
-                        </li>
-                        <li><a href="logout.php" class="logout-btn">Cerrar Sesión</a></li>
-                        <li class="user-greeting">Hola,
-                            <?php echo htmlspecialchars($_SESSION['user_name'] ?? $_SESSION['nombre']); ?>!
-                        </li>
-                    <?php else: ?>
-                        <li><a href="login.php">Login</a></li>
-                    <?php endif; ?>
+                    <li><a href="login.php">Login</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
             </nav>
             <a href="carrito.php" class="cart-icon">
-                🛒
-                <span class="cart-badge">0</span>
+                🛒<span class="cart-badge">0</span>
             </a>
-
         </div>
     </header>
 
-    <!-- Hero Section - MEJORADO -->
+    <!-- Hero Section -->
     <section class="hero">
-        <!-- Fondo con imágenes -->
-        <div class="hero-background">
-            <img src="IMG/imagendeinicio.jpg" alt="Casa Prefabricada 1" class="active">
-            <img src="IMG/imagendeinicio_2.jpg" alt="Casa Prefabricada 2">
-            <img src="IMG/imagendeinicio_3.jpg" alt="Casa Prefabricada 3">
-        </div>
-
-        <!-- Overlay para mejorar legibilidad -->
-        <div class="hero-overlay"></div>
-
-        <!-- Contenido principal -->
         <div class="container">
             <div class="hero-content">
-                <h1>Transformamos tus sueños en un hogar a tu medida con nuestras casas prefabricadas</h1>
-                <p>Desde Tiny Houses hasta casas prefabricadas de lujo. Explora nuestras opciones y descubre la que más
-                    se adecúa a tus necesidades.</p>
-                <a href="#quote" class="cta-button">Agenda tu asesoría →</a>
+                <div class="hero-text">
+                    <p class="hero-subtitle">Tu Hogar, Nuestra Pasión</p>
+                    <h1>Encuentra el modelo perfecto</h1>
+                    <p>Green Valley ofrece una amplia variedad de casas prefabricadas diseñadas para adaptarse a tus necesidades. Soluciones innovadoras que combinan diseño vanguardista, construcción de alta calidad y eficiencia energética.</p>
+                    <a href="#catalog" class="btn btn-primary">Cotiza Ahora</a>
+                </div>
+                <div class="hero-image">
+                    <img src="IMG/imagendeinicio.jpg" alt="Casa prefabricada moderna Green Valley">
+                </div>
             </div>
-        </div>
-
-        <!-- Indicadores de imagen -->
-        <div class="hero-indicators">
-            <div class="indicator active" data-slide="0"></div>
-            <div class="indicator" data-slide="1"></div>
-            <div class="indicator" data-slide="2"></div>
-        </div>
-
-        <!-- Navegación -->
-        <div class="hero-nav">
-            <div class="nav-arrow" id="prevBtn">‹</div>
-            <div class="nav-arrow" id="nextBtn">›</div>
         </div>
     </section>
 
@@ -801,55 +836,47 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
     <section class="features">
         <div class="container">
             <h2 class="section-title">¿Por qué elegir Green Valley?</h2>
-            <p class="section-subtitle">Somos especialistas en construcción de casas prefabricadas con más de 10 años de
-                experiencia en el mercado</p>
+            <p class="section-subtitle">Somos especialistas en construcción de casas prefabricadas con más de 10 años de experiencia en el mercado</p>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
                     <h3>Construcción Rápida</h3>
-                    <p>Nuestras casas se construyen en tiempo récord sin comprometer la calidad. Desde el diseño hasta
-                        la entrega en tiempo mínimo.</p>
+                    <p>Nuestras casas se construyen en tiempo récord sin comprometer la calidad. Desde el diseño hasta la entrega en tiempo mínimo.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🏗️</div>
                     <h3>Calidad Garantizada</h3>
-                    <p>Utilizamos materiales de primera calidad y técnicas de construcción avanzadas para garantizar la
-                        durabilidad de tu hogar.</p>
+                    <p>Utilizamos materiales de primera calidad y técnicas de construcción avanzadas para garantizar la durabilidad de tu hogar.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
                     <h3>Diseño Personalizado</h3>
-                    <p>Cada casa es única. Trabajamos contigo para crear el diseño perfecto que se adapte a tus
-                        necesidades y gustos.</p>
+                    <p>Cada casa es única. Trabajamos contigo para crear el diseño perfecto que se adapte a tus necesidades y gustos.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">💰</div>
                     <h3>Precios Competitivos</h3>
-                    <p>Ofrecemos las mejores opciones de financiamiento y precios justos para hacer realidad tu sueño de
-                        tener casa propia.</p>
+                    <p>Ofrecemos las mejores opciones de financiamiento y precios justos para hacer realidad tu sueño de tener casa propia.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🌱</div>
                     <h3>Eco-Friendly</h3>
-                    <p>Nuestras casas son amigables con el medio ambiente, utilizando materiales sostenibles y
-                        tecnologías eficientes.</p>
+                    <p>Nuestras casas son amigables con el medio ambiente, utilizando materiales sostenibles y tecnologías eficientes.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🔧</div>
                     <h3>Servicio Integral</h3>
-                    <p>Te acompañamos en todo el proceso, desde el diseño inicial hasta la entrega final de tu casa
-                        completamente terminada.</p>
+                    <p>Te acompañamos en todo el proceso, desde el diseño inicial hasta la entrega final de tu casa completamente terminada.</p>
                 </div>
             </div>
         </div>
     </section>
 
- <!-- Catalog Section -->
+    <!-- Catalog Section -->
     <section id="catalog" class="catalog">
         <div class="container">
             <h2 class="section-title">Nuestras Casas Prefabricadas</h2>
-            <p class="section-subtitle">Descubre nuestra amplia gama de modelos, desde casas compactas hasta residencias
-                de lujo</p>
+            <p class="section-subtitle">Descubre nuestra amplia gama de modelos, desde casas compactas hasta residencias de lujo</p>
             <div class="houses-grid">
                 <!-- Casa 1 -->
                 <div class="house-card">
@@ -858,7 +885,7 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                         <span class="house-badge">Más Popular</span>
                     </div>
                     <div class="house-info">
-                        <h3 class="house-title">Casa Prefabricada 21 m2</h3>
+                        <h3 class="house-title">Casa Prefabricada 21 m²</h3>
                         <div class="house-price">Desde $1.940.000</div>
                         <div class="house-details">
                             <span>🛏️ 1 Dormitorio</span>
@@ -866,7 +893,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 21 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=1" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -878,15 +904,15 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                         <span class="house-badge">Recomendado</span>
                     </div>
                     <div class="house-info">
-                        <h3 class="house-title">Casa Prefabricada 36 m2</h3>
+                        <h3 class="house-title">Casa Prefabricada 36 m²</h3>
                         <div class="house-price">Desde $3.390.000</div>
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 1 Baño</span>
                             <span>📐 36 m²</span>
                         </div>
+                        <div class="
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=2" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -906,7 +932,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 42 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=3" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -927,7 +952,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 54 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -947,7 +971,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 60 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=5" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -968,7 +991,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 60 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=6" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -988,7 +1010,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 72 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=7" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1008,7 +1029,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 80 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=8" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1027,7 +1047,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 90 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=9" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1046,7 +1065,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 90 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=10" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1065,7 +1083,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 100 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=11" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1084,7 +1101,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 126 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=12" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1104,7 +1120,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 120 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=13" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1124,7 +1139,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 130 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=14" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1144,7 +1158,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 120 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=15" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1164,7 +1177,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 134 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=16" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1184,7 +1196,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 135 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=17" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1203,7 +1214,6 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                             <span>📐 254 m²</span>
                         </div>
                         <div class="house-actions">
-                            <a href="#quote" class="btn btn-primary">Cotizar</a>
                             <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
@@ -1259,39 +1269,29 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
     <footer>
         <div class="container">
             <div class="footer-content">
+                <!-- Updated footer structure to match images -->
                 <div class="footer-column">
-                    <h3>Green Valley Estructuras</h3>
-                    <p style="color: #bdc3c7; margin-bottom: 20px;">
-                        Especialistas en casas prefabricadas de alta calidad. Transformamos tus sueños en realidad con
-                        diseños únicos y construcción eficiente.
-                    </p>
-                    <div style="color: #bdc3c7;">
-                        <p>📍 Av. Padre Jorge Alessandri KM 22</p>
-                        <p>San Bernardo, Región Metropolitana</p>
-                        <p>📞 +56 2 2583 2001</p>
-                        <p>📧 contacto@casasgreenvalley.cl</p>
+                    <div class="footer-logo">
+                        <img src="IMG/logoGreenValley.jpg" alt="Green Valley">
+                        <div>
+                            <p>© 2025 Green Valley, Inc.</p>
+                            <p>All rights reserved.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="footer-column">
-                    <h3>Nuestros Servicios</h3>
+                    <h3>Enlaces</h3>
                     <ul>
-                        <li><a href="#catalog">Casas Prefabricadas</a></li>
-                        <li><a href="#">Tiny Houses</a></li>
-                        <li><a href="#">Casas de Lujo</a></li>
-                        <li><a href="#">Diseño Personalizado</a></li>
-                        <li><a href="#">Llave en Mano</a></li>
-                        <li><a href="#">Asesoría Técnica</a></li>
+                        <li><a href="index.php">Inicio</a></li>
+                        <li><a href="sobre-nosotros.php">Sobre Nosotros</a></li>
+                        <li><a href="#catalog">Modelos</a></li>
+                        <li><a href="#quote">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Información</h3>
                     <ul>
-                        <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros Proyectos</a></li>
-                        <li><a href="#">Proceso de Construcción</a></li>
-                        <li><a href="#">Garantías</a></li>
-                        <li><a href="#">Financiamiento</a></li>
-                        <li><a href="#">Preguntas Frecuentes</a></li>
+                        <li><a href="sobrenosotros.php">Quiénes Somos</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1299,26 +1299,15 @@ if ($current_page == 'index.php' && isset($_SESSION['user_id']) && isset($_SESSI
                     <ul>
                         <li><a href="#">Facebook</a></li>
                         <li><a href="#">Instagram</a></li>
-                        <li><a href="#">YouTube</a></li>
-                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="https://www.youtube.com/@EstructurasGreenValley">YouTube</a></li>
                     </ul>
-                    <div style="margin-top: 20px;">
-                        <h4 style="color: #7cb342; margin-bottom: 10px;">WhatsApp</h4>
-                        <a href="https://wa.me/56956397365" style="color: #25d366; text-decoration: none;">+569 5309
-                            7365</a><br>
-                        <a href="https://wa.me/56987037917" style="color: #25d366; text-decoration: none;">+569 8703
-                            7917</a>
-                    </div>
                 </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2025 Green Valley Estructuras. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
     <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/56956397365" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/+56995862538" class="whatsapp-float" target="_blank">
         💬
     </a>
 

@@ -996,16 +996,112 @@ $all_cotizaciones  = getAllCotizaciones();
               </div>
           </section>
 
-      <?php else: ?>
-          <!-- Other Sections -->
-          <section class="section active">
-              <div class="under-construction">
-                  <div class="construction-icon">🚧</div>
-                  <h3>Sección en Desarrollo</h3>
-                  <p>La funcionalidad de <?php echo ucfirst($active_section); ?> estará disponible próximamente.</p>
-              </div>
-          </section>
-      <?php endif; ?>
+        <?php elseif ($active_section === 'history'): ?>
+            <section class="section active">
+                <h2>Historial de Cotizaciones Recientes</h2>
+                <p class="section-subtitle">Últimas cotizaciones realizadas en el sistema.</p>
+                <div class="table-container" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        <thead style="background-color: #27ae60; color: white;">
+                            <tr>
+                                <th style="padding: 15px;">ID</th>
+                                <th style="padding: 15px;">Cliente</th>
+                                <th style="padding: 15px;">Modelo</th>
+                                <th style="padding: 15px;">Precio Total</th>
+                                <th style="padding: 15px;">Estado</th>
+                                <th style="padding: 15px;">Fecha</th>
+                                <th style="padding: 15px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($all_cotizaciones)): ?>
+                                <tr>
+                                    <td colspan="7" style="padding: 40px; text-align: center; color: #666;">No hay cotizaciones registradas.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($all_cotizaciones as $cotizacion): ?>
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td style="padding: 15px;"><?php echo $cotizacion['id_cotizacion']; ?></td>
+                                        <td style="padding: 15px;">
+                                            <strong><?php echo htmlspecialchars($cotizacion['cliente_nombre'] . ' ' . $cotizacion['cliente_apellido']); ?></strong>
+                                        </td>
+                                        <td style="padding: 15px;"><?php echo htmlspecialchars($cotizacion['modelo_casa']); ?></td>
+                                        <td style="padding: 15px; font-weight: bold; color: #27ae60;">
+                                            $<?php echo number_format($cotizacion['total']); ?>
+                                        </td>
+                                        <td style="padding: 15px;">
+                                            <span style="background-color: <?php 
+                                                echo $cotizacion['estado'] === 'pendiente' ? '#f39c12' : 
+                                                    ($cotizacion['estado'] === 'aceptada' ? '#27ae60' : '#e74c3c'); 
+                                            ?>; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px;">
+                                                <?php echo ucfirst($cotizacion['estado']); ?>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 15px;"><?php echo date('d/m/Y', strtotime($cotizacion['fecha'])); ?></td>
+                                        <td style="padding: 15px;">
+                                            <button class="btn btn-primary btn-sm" onclick="viewCotizacion(<?php echo $cotizacion['id_cotizacion']; ?>)">
+                                                <i class="fas fa-eye"></i> Ver
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        <?php elseif ($active_section === 'settings'): ?>
+            <section class="section active">
+                <h2>Configuración de Mi Cuenta</h2>
+                <p class="section-subtitle">Actualiza tus datos personales y de acceso.</p>
+                <form id="adminSettingsForm" style="max-width:400px;">
+                    <div style="margin-bottom:15px;">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" value="<?php echo htmlspecialchars($_SESSION['nombre']); ?>" required style="width:100%;padding:8px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label>Email:</label>
+                        <input type="email" name="correo" value="<?php echo htmlspecialchars($_SESSION['usuario']); ?>" required style="width:100%;padding:8px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label>Teléfono:</label>
+                        <input type="text" name="telefono" value="<?php echo isset($_SESSION['telefono']) ? htmlspecialchars($_SESSION['telefono']) : ''; ?>" style="width:100%;padding:8px;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label>Nueva Contraseña (opcional):</label>
+                        <input type="password" name="contrasena" style="width:100%;padding:8px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+                <script>
+                document.getElementById('adminSettingsForm').onsubmit = function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    formData.append('action', 'update_admin_settings');
+                    fetch('admin-ajax.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Datos actualizados correctamente.');
+                            location.reload();
+                        } else {
+                            alert(data.error || 'Error al actualizar datos.');
+                        }
+                    })
+                    .catch(() => {
+                        alert('Error al procesar la solicitud.');
+                    });
+                };
+                </script>
+            </section>
+        <?php endif; ?>
+
+
+    
   </main>
 
   <!-- WhatsApp Float Button -->

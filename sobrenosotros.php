@@ -132,7 +132,7 @@
 
         /* Hero Section */
         .hero-about {
-            background: linear-gradient(135deg, #7cb342 0%, #8bc34a 100%);
+            background: linear-gradient(135deg, #195f56ff 0%, #2c4f04ff 100%);
             color: white;
             padding: 80px 0;
             text-align: center;
@@ -496,15 +496,13 @@
     <header>
         <div class="container header-container">
             <a href="index.php" class="logo">
-                <img src="logoGreenValley.jpg" alt="Green Valley" class="logo-image">
+                <img src="IMG/logoGreenValley.jpg" alt="Green Valley" class="logo-image">
             </a>
             <nav>
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="sobre-nosotros.php">Nuestra Empresa</a></li>
+                    <li><a href="sobrenosotros.php">Nuestra Empresa</a></li>
                     <li><a href="index.php#catalog">Casas prefabricadas</a></li>
-                    <li><a href="#llave">Llave en mano</a></li>
-                    <li><a href="#proyectos">Proyectos</a></li>
                     <li><a href="login.php">Login</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
@@ -540,14 +538,14 @@
                 </div>
                 <!-- Aca deberia de tner una imagen del equipo " que no se nos olvide xd" -->
                 <div class="about-image">
-                    <img src="/placeholder.svg?height=400&width=500" alt="Equipo Green Valley">
+                    <img src="IMG/equipogreenvalley.jpeg" alt="Equipo Green Valley">
                 </div>
             </div>
             <!-- Aca deberia de tner una imagen de una casa " que no se nos olvide xd" -->
 
             <div class="about-grid">
                 <div class="about-image">
-                    <img src="/placeholder.svg?height=400&width=500" alt="Casa Green Valley">
+                    <img src="IMG/casagreenvalley.jpeg" alt="Casa Green Valley">
                 </div>
                 <div class="about-text">
                     <h2>Más que una Casa, un Hogar</h2>
@@ -590,52 +588,6 @@
         </div>
     </section>
 
-    <!-- Values Section -->
-    <section class="values-section">
-        <div class="container">
-            <h2 class="section-title">Nuestros Valores</h2>
-            <p class="section-subtitle">Los principios que guían nuestro trabajo y compromiso con cada cliente</p>
-
-            <div class="values-grid">
-                <div class="value-card">
-                    <div class="value-icon">🏆</div>
-                    <h3>Calidad Superior</h3>
-                    <p>Utilizamos materiales de primera calidad y técnicas de construcción avanzadas para garantizar la
-                        durabilidad y excelencia de cada proyecto.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">🤝</div>
-                    <h3>Compromiso Total</h3>
-                    <p>Nos comprometemos con cada cliente desde el primer contacto hasta la entrega final, asegurando
-                        una experiencia excepcional en todo momento.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">🎯</div>
-                    <h3>Atención al Detalle</h3>
-                    <p>Cada elemento de tu casa prefabricada es cuidadosamente planificado y ejecutado con la máxima
-                        precisión y atención a los detalles.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">💡</div>
-                    <h3>Innovación Constante</h3>
-                    <p>Nos mantenemos a la vanguardia de las nuevas tecnologías y tendencias en construcción
-                        prefabricada para ofrecer soluciones modernas.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">🌱</div>
-                    <h3>Sostenibilidad</h3>
-                    <p>Construimos pensando en el futuro, utilizando materiales eco-friendly y procesos que respetan el
-                        medio ambiente.</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">⏰</div>
-                    <h3>Puntualidad</h3>
-                    <p>Cumplimos con los plazos establecidos sin comprometer la calidad, porque sabemos lo importante
-                        que es tu tiempo.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Team Section -->
     <section class="team-section">
