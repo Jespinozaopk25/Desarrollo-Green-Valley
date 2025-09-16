@@ -8,8 +8,13 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 2; // Por defecto casa 2
 $casas = [
     1 => [
         'titulo' => 'Casa Prefabricada 21 m²',
-        'imagen' => 'IMG/casa1.jpg',
-        'precio_desde' => '2.890.000',
+        'imagenes' => [
+            'IMG/casa1.jpg',
+            'IMG/casa1_1.jpg',
+            'IMG/casa1_2.jpg',
+            'IMG/casa1_3.jpg'
+        ],
+        'precio_desde' => '1.940.000',
         'dormitorios' => 1,
         'banos' => 1,
         'superficie' => 21,
@@ -17,7 +22,12 @@ $casas = [
     ],
     2 => [
         'titulo' => 'Casa Prefabricada 36 m²',
-        'imagen' => 'IMG/casa2.jpg',
+        'imagenes' => [
+            'IMG/casa2.jpg',
+            'IMG/casa2_1.jpg',
+            'IMG/casa2_2.jpg',
+            'IMG/casa2_3.jpg'
+        ],
         'precio_desde' => '3.390.000',
         'dormitorios' => 2,
         'banos' => 1,
@@ -26,11 +36,236 @@ $casas = [
     ],
     3 => [
         'titulo' => 'Casa Prefabricada 48 m²',
-        'imagen' => 'IMG/casa3.jpg',
-        'precio_desde' => '4.290.000',
+        'imagenes' => [
+            'IMG/casa3.jpg',
+            'IMG/casa3_1.jpg',
+            'IMG/casa3_2.jpg',
+            'IMG/casa3_3.jpg'
+        ],
+        'precio_desde' => '4.338.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => 42,
+        'cobertizo' => 6,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    //AGREGADO (azul)
+    4 => [
+        'titulo' => 'Casa Prefabricada 54 m²',
+        'imagenes' => [
+            'IMG/casa1.jpg',
+            'IMG/casa4_1.jpg',
+            'IMG/casa4_2.jpg',
+            'IMG/casa4_3.jpg'
+        ],
+        'precio_desde' => '4.698.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => 54,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    5 => [
+        'titulo' => 'Casa Prefabricada 66 m²',
+        'imagenes' => [
+            'IMG/casa5.jpg',
+            'IMG/casa5_1.jpg',
+            'IMG/casa5_2.jpg',
+            'IMG/casa5_3.jpg'
+        ],
+        'precio_desde' => '5.400.000',
+        'dormitorios' => 2,
+        'banos' => 1,
+        'superficie' => 60,
+        'cobertizo' => 6,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    6 => [
+        'titulo' => 'Casa Prefabricada 66 m²',
+        'imagenes' => [
+            'IMG/casa6.jpg',
+            'IMG/casa6_1.jpg',
+            'IMG/casa6_2.jpg',
+            'IMG/casa6_3.jpg'
+        ],
+        'precio_desde' => '5.610.000',
+        'dormitorios' => 3,
+        'banos' => 1,
+        'superficie' => 60,
+        'cobertizo' => 6,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    7 => [
+        'titulo' => 'Casa Prefabricada 66 m²',
+        'imagenes' => [
+            'IMG/casa7.jpg',
+            'IMG/casa7_1.jpg',
+            'IMG/casa7_2.jpg',
+            'IMG/casa7_3.jpg'
+        ],
+        'precio_desde' => '6.120.000',
+        'dormitorios' => 2,
+        'banos' => 2,
+        'superficie' => 72,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    8 => [
+        'titulo' => 'Casa Prefabricada 80 m²',
+        'imagenes' => [
+            'IMG/casa8.jpg',
+            'IMG/casa8_1.jpg',
+            'IMG/casa8_2.jpg',
+            'IMG/casa8_3.jpg'
+        ],
+        'precio_desde' => '6.800.000',
+        'dormitorios' => 3-2,
+        'banos' => 2,
+        'superficie' => 80,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    9 => [
+        'titulo' => 'Casa Prefabricada 90 m² Tradicional',
+        'imagenes' => [
+            'IMG/casa9.jpg',
+            'IMG/casa9_1.jpg',
+            'IMG/casa9_2.jpg',
+            'IMG/casa9_3.jpg'
+        ],
+        'precio_desde' => '7.650.000',
         'dormitorios' => 3,
         'banos' => 2,
-        'superficie' => 48,
+        'superficie' => 90,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    10 => [
+        'titulo' => 'Casa Prefabricada 90 m² Mediterránea',
+        'imagenes' => [
+            'IMG/casa10.jpg',
+            'IMG/casa10_1.jpg',
+            'IMG/casa10_2.jpg',
+            'IMG/casa10_3.jpg'
+        ],
+        'precio_desde' => '7.650.000',
+        'dormitorios' => 3,
+        'banos' => 2,
+        'superficie' => 90,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    11 => [
+        'titulo' => 'Casa Prefabricada 117 m²',
+        'imagenes' => [
+            'IMG/casa11.jpg',
+            'IMG/casa11_1.jpg',
+            'IMG/casa11_2.jpg',
+            'IMG/casa11_3.jpg'
+        ],
+        'precio_desde' => '9.880.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => 100,
+        'cobertizo' => 17,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    12 => [
+        'titulo' => 'Casa Prefabricada 126 m²',
+        'imagenes' => [
+            'IMG/casa12.jpg',
+            'IMG/casa12_1.jpg',
+            'IMG/casa12_2.jpg',
+            'IMG/casa12_3.jpg'
+        ],
+        'precio_desde' => '10.710.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => 126,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    13 => [
+        'titulo' => 'Casa Prefabricada 156 m²',
+        'imagenes' => [
+            'IMG/casa13.jpg',
+            'IMG/casa13_1.jpg',
+            'IMG/casa13_2.jpg',
+            'IMG/casa13_3.jpg'
+        ],
+        'precio_desde' => '12.900.000',
+        'dormitorios' => 4,
+        'banos' => 3,
+        'superficie' => 120,
+        'cobertizo' => 36,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    14 => [
+        'titulo' => 'Casa Prefabricada 130 m² (2 Pisos)',
+        'imagenes' => [
+            'IMG/casa14.jpg',
+            'IMG/casa14_1.jpg',
+            'IMG/casa14_2.jpg',
+            'IMG/casa14_3.jpg'
+        ],
+        'precio_desde' => '15.568.000',
+        'dormitorios' => 3,
+        'banos' => 2,
+        'superficie' => 130,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    15 => [
+        'titulo' => 'Casa Prefabricada 166 m²',
+        'imagenes' => [
+            'IMG/casa15.jpg',
+            'IMG/casa15_1.jpg',
+            'IMG/casa15_2.jpg',
+            'IMG/casa15_3.jpg'
+        ],
+        'precio_desde' => '13.600.000',
+        'dormitorios' => 4,
+        'banos' => 2,
+        'superficie' => 120,
+        'cobertizo' => 46,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    16 => [
+        'titulo' => 'Casa Prefabricada 190 m²',
+        'imagenes' => [
+            'IMG/casa16.jpg',
+            'IMG/casa16_1.jpg',
+            'IMG/casa16_2.jpg',
+            'IMG/casa16_3.jpg'
+        ],
+        'precio_desde' => '15.490.000',
+        'dormitorios' => 3,
+        'banos' => 3,
+        'superficie' => 134,
+        'cobertizo' => 56,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    17 => [
+        'titulo' => 'Casa Prefabricada 190 m²',
+        'imagenes' => [
+            'IMG/casa17.jpg',
+            'IMG/casa17_1.jpg',
+            'IMG/casa17_2.jpg',
+            'IMG/casa17_3.jpg'
+        ],
+        'precio_desde' => '16.490.000',
+        'dormitorios' => 3,
+        'banos' => 3,
+        'superficie' => 135,
+        'cobertizo' => 55,
+        'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
+    ],
+    18 => [
+        'titulo' => 'Casa Prefabricada 281 m²',
+        'imagenes' => [
+            'IMG/casa18.jpg',
+            'IMG/casa18_1.jpg',
+            'IMG/casa18_2.jpg',
+            'IMG/casa18_3.jpg'
+        ],
+        'precio_desde' => '30.297.000',
+        'dormitorios' => 6,
+        'banos' => 4.5,
+        'superficie' => 254,
+        'cobertizo' => 27,
         'descripcion' => 'Modelo familiar amplio, ideal para familias grandes que buscan espacios cómodos y funcionales. Diseño moderno con todas las comodidades.'
     ]
 ];
@@ -39,19 +274,19 @@ $kits = [
     1 => [
         0 => [
             'nombre' => 'Kit Básico',
-            'precio' => '5000000',
+            'precio' => '1940000',
             'descripcion' => 'Incluye estructura, paneles y techumbre. Ideal para autoconstrucción.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         1 => [
             'nombre' => 'Kit Completo',
-            'precio' => '7000000',
+            'precio' => '3380000',
             'descripcion' => 'Incluye estructura más ventanas, puertas y terminaciones básicas.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         2 => [
             'nombre' => 'Kit Premium',
-            'precio' => '9000000',
+            'precio' => '4600000',
             'descripcion' => 'Incluye todo lo anterior más radier, electricidad y flete.',
             'imagen' => 'IMG/kits_1.jpeg'
         ]
@@ -59,19 +294,19 @@ $kits = [
     2 => [
         0 => [
             'nombre' => 'Kit Estructural',
-            'precio' => '3000000',
+            'precio' => '3390000',
             'descripcion' => 'Incluye estructura, paneles y techumbre. Ideal para autoconstrucción.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         1 => [
             'nombre' => 'Kit Inicial',
-            'precio' => '5000000',
+            'precio' => '5272000',
             'descripcion' => 'Incluye estructura más ventanas, puertas y terminaciones básicas.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         2 => [
             'nombre' => 'Kit Completo',
-            'precio' => '7000000',
+            'precio' => '7920000',
             'descripcion' => 'Incluye todo lo anterior más radier, electricidad y flete.',
             'imagen' => 'IMG/kits_1.jpeg'
         ]
@@ -79,19 +314,320 @@ $kits = [
     3 => [
         0 => [
             'nombre' => 'Kit Esencial',
-            'precio' => '8000000',
+            'precio' => '4338000',
             'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         1 => [
             'nombre' => 'Kit Integral',
-            'precio' => '11000000',
+            'precio' => '6512000',
             'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
             'imagen' => 'IMG/kits_1.jpeg'
         ],
         2 => [
             'nombre' => 'Kit Luxury',
-            'precio' => '15000000',
+            'precio' => '10300000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    // AGREGADO (azul)
+    4 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '4698000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '7830000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '11880000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    5 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '5400000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '9200000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '13930000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    6 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '5610000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '9570000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '14210000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    7 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '6120000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '10440000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '14760000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    8 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '6800000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '11600000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '16400000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    9 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '7650000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '13050000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '18450000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    10 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '7650000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '13050000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '18450000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    11 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '9880000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '16100000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '22720000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    12 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '10710000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '19555000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '25200000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    13 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '12900000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '19555000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '29760000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    14 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '15568000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '24325000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '31275000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    15 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '13600000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '20990000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '31360000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    16 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '15490000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '25290000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '35760000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    17 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '16490000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '26456000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '36710000',
+            'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ]
+    ],
+    18 => [
+        0 => [
+            'nombre' => 'Kit Esencial',
+            'precio' => '30297000',
+            'descripcion' => 'Incluye estructura, paneles y techumbre premium.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        1 => [
+            'nombre' => 'Kit Integral',
+            'precio' => '47285000',
+            'descripcion' => 'Incluye estructura completa con terminaciones de calidad.',
+            'imagen' => 'IMG/kits_1.jpeg'
+        ],
+        2 => [
+            'nombre' => 'Kit Luxury',
+            'precio' => '62010000',
             'descripcion' => 'Incluye todo premium: estructura, terminaciones de lujo, instalaciones completas.',
             'imagen' => 'IMG/kits_1.jpeg'
         ]
@@ -311,10 +847,6 @@ $cantidadCarrito = isset($_SESSION['carrito']) ? obtenerCantidadTotal($_SESSION[
             gap: 60px;
             align-items: flex-start;
             margin-bottom: 60px;
-        }
-
-        .house-image-container {
-            position: relative;
         }
 
         .house-main-image {
@@ -709,8 +1241,141 @@ $cantidadCarrito = isset($_SESSION['carrito']) ? obtenerCantidadTotal($_SESSION[
                 gap: 15px;
             }
         }
+
+        /* AGREGADO (azul) */
+       .house-image-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .house-gallery {
+            display: flex;
+            width: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .gallery-item {
+            flex: 0 0 100%;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Botones */
+        .gallery-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.7);
+            border: none;
+            color: #333;
+            font-size: 2rem;
+            padding: 8px 14px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+            transition: background 0.3s ease;
+        }
+
+        .gallery-btn:hover {
+            background: rgba(255,255,255,0.95);
+        }
+
+        .gallery-btn.prev {
+            left: 15px;
+        }
+
+        .gallery-btn.next {
+            right: 15px;
+        }
+
+        /* Indicadores */
+        .gallery-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .indicator:hover {
+            transform: scale(1.2);
+        }
+
+        .indicator.active {
+            background: #4CAF50; /* color destacado */
+        }
+
+
+        /* HASTA ACA */
+
     </style>
 </head>
+
+
+
+<script>
+    // Agregado (azul)
+let currentIndex = 0;
+
+function updateGallery() {
+    const gallery = document.getElementById("houseGallery");
+    const indicators = document.querySelectorAll(".indicator");
+
+    gallery.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    indicators.forEach((dot, i) => {
+        dot.classList.toggle("active", i === currentIndex);
+    });
+}
+
+function moveGallery(direction) {
+    const items = document.querySelectorAll(".gallery-item");
+    const totalItems = items.length;
+
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = totalItems - 1;
+    if (currentIndex >= totalItems) currentIndex = 0;
+
+    updateGallery();
+}
+
+function goToSlide(index) {
+    currentIndex = index;
+    updateGallery();
+}
+
+// Navegación con flechas del teclado
+document.addEventListener("keydown", function(e) {
+    if (e.key === "ArrowLeft") {
+        moveGallery(-1);
+    } else if (e.key === "ArrowRight") {
+        moveGallery(1);
+    }
+});
+// hasta aca
+</script>
+
+
+
 <body>
     <!-- Top Bar -->
     <div class="top-bar">
@@ -764,12 +1429,30 @@ $cantidadCarrito = isset($_SESSION['carrito']) ? obtenerCantidadTotal($_SESSION[
             <div class="house-detail-card fade-in-up">
                 <!-- House Hero Section -->
                 <div class="house-hero">
+                    <!-- agregado (azul) -->
                     <div class="house-image-container">
-                        <img src="<?php echo htmlspecialchars($casa['imagen']); ?>" 
-                             alt="<?php echo htmlspecialchars($casa['titulo']); ?>" 
-                             class="house-main-image">
-                        <span class="house-badge">Recomendado</span>
+                        <div class="house-gallery" id="houseGallery">
+                            <?php foreach ($casa['imagenes'] as $index => $img): ?>
+                                <div class="gallery-item">
+                                    <img src="<?php echo $img; ?>" alt="<?php echo htmlspecialchars($casa['titulo']); ?>">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Botones -->
+                        <button class="gallery-btn prev" onclick="moveGallery(-1)">&#10094;</button>
+                        <button class="gallery-btn next" onclick="moveGallery(1)">&#10095;</button>
+
+                        <!-- Indicadores -->
+                        <div class="gallery-indicators" id="galleryIndicators">
+                            <?php foreach ($casa['imagenes'] as $index => $img): ?>
+                                <span class="indicator <?php echo $index === 0 ? 'active' : ''; ?>" onclick="goToSlide(<?php echo $index; ?>)"></span>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
+
+                    <!-- HASTA ACA -->
+
                     <div class="house-info">
                         <h1 class="house-title"><?php echo htmlspecialchars($casa['titulo']); ?></h1>
                         <div class="house-price">Desde $<?php echo number_format((float) str_replace('.', '', $casa['precio_desde']), 0, ',', '.'); ?></div>
@@ -790,6 +1473,15 @@ $cantidadCarrito = isset($_SESSION['carrito']) ? obtenerCantidadTotal($_SESSION[
                                 <div class="spec-label">Superficie</div>
                                 <div class="spec-value"><?php echo $casa['superficie']; ?> m²</div>
                             </div>
+                            <!-- Cobertizo (Algunas casas) AGREGADO azul -->
+                            <?php if (isset($casa['cobertizo'])): ?>
+                                <div class="spec-item">
+                                    <div class="spec-icon">🏠</div>
+                                    <div class="spec-label">Cobertizo</div>
+                                    <div class="spec-value"><?php echo $casa['cobertizo']; ?> m²</div>
+                                </div>
+                            <?php endif; ?>
+                            <!-- hasta aca -->
                         </div>
 
                         <div class="house-description">

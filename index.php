@@ -823,7 +823,7 @@
                     <p class="hero-subtitle">Tu Hogar, Nuestra Pasión</p>
                     <h1>Encuentra el modelo perfecto</h1>
                     <p>Green Valley ofrece una amplia variedad de casas prefabricadas diseñadas para adaptarse a tus necesidades. Soluciones innovadoras que combinan diseño vanguardista, construcción de alta calidad y eficiencia energética.</p>
-                    <a href="#catalog" class="btn btn-primary">Cotiza Ahora</a>
+                    <a href="#contacto" class="btn btn-primary">Cotiza Ahora</a>
                 </div>
                 <div class="hero-image">
                     <img src="IMG/imagendeinicio.jpg" alt="Casa prefabricada moderna Green Valley">
@@ -890,7 +890,7 @@
                         <div class="house-details">
                             <span>🛏️ 1 Dormitorio</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 21 m²</span>
+                            <span>📐 21 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=1" class="btn btn-secondary">Ver detalles</a>
@@ -909,7 +909,7 @@
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 36 m²</span>
+                            <span>📐 36 m²Habitable</span>
                         </div>
                         <div class="
                         <div class="house-actions">
@@ -929,7 +929,8 @@
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 42 m²</span>
+                            <span>📐 42 m² Habitable</span>
+                            <span>🏠 6 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=3" class="btn btn-secondary">Ver detalles</a>
@@ -949,7 +950,7 @@
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 54 m²</span>
+                            <span>📐 54 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
@@ -968,7 +969,8 @@
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 60 m²</span>
+                            <span>📐 60 m² Habitable</span>
+                            <span>🏠 6 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=5" class="btn btn-secondary">Ver detalles</a>
@@ -980,15 +982,16 @@
 
                 <div class="house-card extra-house" style="display:none;">
                     <div class="house-image">
-                        <img src="IMG/casa6.jpg" alt="Casa Prefabricada 60 m2">
+                        <img src="IMG/casa6.jpg" alt="Casa Prefabricada 66 m2">
                     </div>
                     <div class="house-info">
-                        <h3 class="house-title">Casa Prefabricada 60 m2</h3>
+                        <h3 class="house-title">Casa Prefabricada 66 m2</h3>
                         <div class="house-price">Desde $5.610.000</div>
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 1 Baño</span>
-                            <span>📐 60 m²</span>
+                            <span>📐 60 m² Habitable</span>
+                            <span>🏠 6 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=6" class="btn btn-secondary">Ver detalles</a>
@@ -1007,7 +1010,7 @@
                         <div class="house-details">
                             <span>🛏️ 2 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 72 m²</span>
+                            <span>📐 72 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=7" class="btn btn-secondary">Ver detalles</a>
@@ -1022,11 +1025,11 @@
                     </div>
                     <div class="house-info">
                         <h3 class="house-title">Casa Prefabricada 80 m2</h3>
-                        <div class="house-price">Desde $4.338.000</div>
+                        <div class="house-price">Desde $6.800.000</div>
                         <div class="house-details">
                             <span>🛏️ 3-2 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 80 m²</span>
+                            <span>📐 80 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=8" class="btn btn-secondary">Ver detalles</a>
@@ -1044,7 +1047,7 @@
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 90 m²</span>
+                            <span>📐 90 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=9" class="btn btn-secondary">Ver detalles</a>
@@ -1062,7 +1065,7 @@
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 90 m²</span>
+                            <span>📐 90 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=10" class="btn btn-secondary">Ver detalles</a>
@@ -1080,7 +1083,8 @@
                         <div class="house-details">
                             <span>🛏️ 4 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 100 m²</span>
+                            <span>📐 100 m² Habitable</span>
+                            <span>🏠 17 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=11" class="btn btn-secondary">Ver detalles</a>
@@ -1098,7 +1102,7 @@
                         <div class="house-details">
                             <span>🛏️ 4 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 126 m²</span>
+                            <span>📐 126 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=12" class="btn btn-secondary">Ver detalles</a>
@@ -1117,7 +1121,8 @@
                         <div class="house-details">
                             <span>🛏️ 4 Dormitorios</span>
                             <span>🚿 3 Baños</span>
-                            <span>📐 120 m²</span>
+                            <span>📐 120 m² Habitable</span>
+                            <span>🏠 36 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=13" class="btn btn-secondary">Ver detalles</a>
@@ -1136,7 +1141,7 @@
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 130 m²</span>
+                            <span>📐 130 m² Habitable</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=14" class="btn btn-secondary">Ver detalles</a>
@@ -1155,7 +1160,8 @@
                         <div class="house-details">
                             <span>🛏️ 4 Dormitorios</span>
                             <span>🚿 2 Baños</span>
-                            <span>📐 120 m²</span>
+                            <span>📐 120 m² Habitable</span>
+                            <span>🏠 46 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=15" class="btn btn-secondary">Ver detalles</a>
@@ -1174,7 +1180,8 @@
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 3 Baños</span>
-                            <span>📐 134 m²</span>
+                            <span>📐 134 m² Habitable</span>
+                            <span>🏠 56 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=16" class="btn btn-secondary">Ver detalles</a>
@@ -1193,7 +1200,8 @@
                         <div class="house-details">
                             <span>🛏️ 3 Dormitorios</span>
                             <span>🚿 3 Baños</span>
-                            <span>📐 135 m²</span>
+                            <span>📐 135 m² Habitable</span>
+                            <span>🏠 55 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
                             <a href="detalle_casa.php?id=17" class="btn btn-secondary">Ver detalles</a>
@@ -1211,10 +1219,11 @@
                         <div class="house-details">
                             <span>🛏️ 6 Dormitorios</span>
                             <span>🚿 4,5 Baños</span>
-                            <span>📐 254 m²</span>
+                            <span>📐 254 m² Habitable</span>
+                            <span>🏠 27 m² Cobertizo</span>
                         </div>
                         <div class="house-actions">
-                            <a href="detalle_casa.php?id=4" class="btn btn-secondary">Ver detalles</a>
+                            <a href="detalle_casa.php?id=18" class="btn btn-secondary">Ver detalles</a>
                         </div>
                     </div>
                 </div>
